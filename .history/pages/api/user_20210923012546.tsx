@@ -10,10 +10,10 @@ interface SuccessResponseType {
   firstName: string;
   lastName: string;
   email: string;
-  cellphone?: number;
+  cellphone: number;
   type: Boolean;
-  address?: string;
-  postalCode?: number;
+  address: string;
+  postalCode: number;
 }
 
 export default async (
@@ -21,11 +21,10 @@ export default async (
   res: NextApiResponse<ErrorResponseType | SuccessResponseType>
 ): Promise<void> => {
   if (req.method === 'POST') {
-    const { firstName, lastName, email, cellphone, type, address, postalCode } =
-      req.body;
+    const { name } = req.body;
 
-    if (!firstName || !lastName || !email || !type) {
-      res.status(400).json({ error: ` Missing body parameter!` });
+    if (!name) {
+      res.status(400).json({ error: ` Missing name!` });
       return;
     }
 

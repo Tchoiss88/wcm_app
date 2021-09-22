@@ -25,7 +25,7 @@ export default async (
       req.body;
 
     if (!firstName || !lastName || !email || !type) {
-      res.status(400).json({ error: ` Missing body parameter!` });
+      res.status(400).json({ error: ` Missing name!` });
       return;
     }
 
