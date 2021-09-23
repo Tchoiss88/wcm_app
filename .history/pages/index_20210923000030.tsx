@@ -1,31 +1,21 @@
-import { NextPage } from 'next';
-import React from 'react';
 import Head from 'next/head';
-import { useSession, signIn, signOut } from 'next-auth/client';
 
-const HomePage: NextPage = () => {
-  const { session, loading } = useSession();
-
+export default function Home() {
   return (
-    <div>
-      {!session && (
-        <div>
-          Not signed in <br />
-          <button onClick={() => signIn}>Sign In</button>
-        </div>
-      )}
+    <div className="container">
+      <Head>
+        <title>Create Next App</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
 
-      {session && (
-        <div>
-          Not signed in as{session.user.email} <br />
-          <button onClick={() => signOut}>Sign Out</button>
-        </div>
-      )}
+      <main>
+        <h1 className="title">
+          Welcome to <a href="https://nextjs.org">Next.js with MongoDB!</a>
+        </h1>
+      </main>
     </div>
   );
-};
-
-export default HomePage;
+}
 
 // export async function getServerSideProps(context) {
 //   const client = await clientPromise;

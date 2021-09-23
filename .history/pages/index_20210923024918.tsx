@@ -9,17 +9,17 @@ const HomePage: NextPage = () => {
   return (
     <div>
       {!session && (
-        <div>
+        <>
           Not signed in <br />
-          <button onClick={() => signIn}>Sign In</button>
-        </div>
+          <button onClick={(): Promise<void> => signIn}>Sign In</button>
+        </>
       )}
 
       {session && (
-        <div>
+        <>
           Not signed in as{session.user.email} <br />
           <button onClick={() => signOut}>Sign Out</button>
-        </div>
+        </>
       )}
     </div>
   );

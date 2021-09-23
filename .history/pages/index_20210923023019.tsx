@@ -4,26 +4,27 @@ import Head from 'next/head';
 import { useSession, signIn, signOut } from 'next-auth/client';
 
 const HomePage: NextPage = () => {
-  const { session, loading } = useSession();
-
+  const { data: session } = useSession();
   return (
-    <div>
-      {!session && (
-        <div>
-          Not signed in <br />
-          <button onClick={() => signIn}>Sign In</button>
-        </div>
-      )}
-
-      {session && (
-        <div>
-          Not signed in as{session.user.email} <br />
-          <button onClick={() => signOut}>Sign Out</button>
-        </div>
-      )}
-    </div>
+    <>
+  if (session) {
+    return (
+      <>
+        Signed in as {session.user.email} <br />
+        <button onClick={() => signOut()}>Sign out</button>
+      </>
+    );
+  }
+  return (
+    <>
+      Not signed in <br />
+      <button onClick={() => signIn()}>Sign in</button>
+    </>
+      );
+    </>
   );
 };
+  
 
 export default HomePage;
 

@@ -3,29 +3,23 @@ import React from 'react';
 import Head from 'next/head';
 import { useSession, signIn, signOut } from 'next-auth/client';
 
-const HomePage: NextPage = () => {
-  const { session, loading } = useSession();
-
+export default function HomePage() {
+  const { data: session } = useSession();
+  if (session) {
+    return (
+      <>
+        Signed in as {session.user.email} <br />
+        <button onClick={() => signOut()}>Sign out</button>
+      </>
+    );
+  }
   return (
-    <div>
-      {!session && (
-        <div>
-          Not signed in <br />
-          <button onClick={() => signIn}>Sign In</button>
-        </div>
-      )}
-
-      {session && (
-        <div>
-          Not signed in as{session.user.email} <br />
-          <button onClick={() => signOut}>Sign Out</button>
-        </div>
-      )}
-    </div>
+    <>
+      Not signed in <br />
+      <button onClick={() => signIn()}>Sign in</button>
+    </>
   );
-};
-
-export default HomePage;
+}
 
 // export async function getServerSideProps(context) {
 //   const client = await clientPromise;
