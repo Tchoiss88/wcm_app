@@ -1,10 +1,10 @@
 import { AppProps } from 'next/app';
+import { Provider } from 'next-auth/client';
 import { FC } from 'react';
 import { useEffect } from 'react';
 import { ThemeProvider } from '@mui/material';
 import { CssBaseline } from '@mui/material';
 import Head from 'next/head';
-import Layout from '../src/layout/Layout';
 import theme from '../lib/theme';
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }: AppProps) => {

@@ -1,11 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth from 'next-auth';
-import Provider from 'next-auth/providers';
+import AuthProvider from 'next-auth/providers';
 
 const options = {
   // Configure one or more authentication providers
   providers: [
-    Provider.Auth0({
+    AuthProvider.Auth0({
       clientId: process.env.AUTH0_CLIENT_ID,
       clientSecret: process.env.AUTH0_CLIENT_SECRET,
       domain: process.env.AUTH0_DOMAIN,

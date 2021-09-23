@@ -1,4 +1,5 @@
 import { AppProps } from 'next/app';
+import { Provider } from 'next-auth/client';
 import { FC } from 'react';
 import { useEffect } from 'react';
 import { ThemeProvider } from '@mui/material';
