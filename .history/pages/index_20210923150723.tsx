@@ -11,14 +11,14 @@ const HomePage: NextPage = () => {
       {!session && (
         <div>
           You must sign in first <br />
-          <button onClick={() => signIn('auth0')}>Sign In</button>
+          <button onClick={() => signIn}>Sign In</button>
         </div>
       )}
 
       {session && (
         <div>
           Not signed in as{session.user.email} <br />
-          <button onClick={() => signOut()}>Sign Out</button>
+          <button onClick={() => signOut}>Sign Out</button>
         </div>
       )}
     </div>

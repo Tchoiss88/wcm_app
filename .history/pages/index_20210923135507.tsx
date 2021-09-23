@@ -1,24 +1,24 @@
 import { NextPage } from 'next';
 import React from 'react';
 import Head from 'next/head';
-import { useSession, signIn, signOut } from 'next-auth/client';
+import { useSession, signIn, signOut } from 'next-auth/react';
 
 const HomePage: NextPage = () => {
-  const { session, loaging } = useSession();
+  const { data: session, status } = useSession();
 
   return (
     <div>
       {!session && (
         <div>
-          You must sign in first <br />
-          <button onClick={() => signIn('auth0')}>Sign In</button>
+          Not signed in <br />
+          <button onClick={() => signIn}>Sign In</button>
         </div>
       )}
 
       {session && (
         <div>
           Not signed in as{session.user.email} <br />
-          <button onClick={() => signOut()}>Sign Out</button>
+          <button onClick={() => signOut}>Sign Out</button>
         </div>
       )}
     </div>

@@ -13,5 +13,12 @@ const options = {
   ],
 };
 
-export default (req: NextApiRequest, res: NextApiResponse) =>
+export NextAuth({
+  callbacks: {
+    session({ session, token, user }) {
+      return session; 
+  },
+});
+
+export  (req: NextApiRequest, res: NextApiResponse) =>
   NextAuth(req, res, options);
