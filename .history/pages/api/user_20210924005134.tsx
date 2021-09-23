@@ -17,6 +17,7 @@ interface SuccessResponseType {
   orders: {};
   balance: number;
   workHours: {};
+  message: string;
 }
 
 export default async (
@@ -79,28 +80,23 @@ export default async (
     });
 
     res.status(200).json(response.ops[0]);
-    //
   } else if (req.method === 'GET') {
     const { db } = await connect();
 
-    const { email } = req.body;
-
-    if (!email) {
-      res.status(400).json({ error: ` Missing email on request body` });
-      return;
-    }
-
     const response = await db.collection('users').findOne({
+      firstName,
+      lastName,
       email,
+      cellphone,
+      worker,
+      address,
+      postalCode,
+      orders: orders || {},
+      workHours: workHours || {},
     });
 
-    if (!response) {
-      res.status(400).json({ error: `Email not found` });
-      return;
-    }
-
-    res.status(200).json(response);
+    res.status(200).json({ message: 'Sucsses' });
   } else {
-    res.status(400).json({ error: ` Wrong request method!` });
+    res.status(400).json({ error: ` wrong request method!` });
   }
 };

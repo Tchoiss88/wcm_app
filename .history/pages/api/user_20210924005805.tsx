@@ -94,12 +94,7 @@ export default async (
       email,
     });
 
-    if (!response) {
-      res.status(400).json({ error: `Email not found` });
-      return;
-    }
-
-    res.status(200).json(response);
+    res.status(200).json(response.ops[0]);
   } else {
     res.status(400).json({ error: ` Wrong request method!` });
   }

@@ -3,15 +3,15 @@ import { Container, Typography, Box, Button } from '@mui/material';
 import React from 'react';
 import styles from '../styles/Home.module.css';
 
-export default function Home() {
+const HomePage: NextPage = () => {
   return (
     <Container className={styles.page}>
-      <Box my={4}>
-        <Typography variant="h4">Here will be my main</Typography>
-      </Box>
+      <h1> Shopping Bag</h1>
     </Container>
   );
-}
+};
+
+export default HomePage;
 
 // export async function getServerSideProps(context) {
 //   const client = await clientPromise;

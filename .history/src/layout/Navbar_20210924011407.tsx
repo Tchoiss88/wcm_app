@@ -4,7 +4,7 @@ import styles from 'styles/Navbar.module.css';
 import { Container, Box } from '@mui/material';
 import { signIn, signOut, useSession } from 'next-auth/client';
 import HomeIcon from '@mui/icons-material/Home';
-import MenuIcon from '@mui/icons-material/Menu';
+import MenuIcon from '@material-ui/icons/Menu';
 
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 
@@ -15,11 +15,6 @@ const Navbar: NextPage = () => {
     <div className={styles.navbar}>
       <Container>
         <Box className={styles.menu}>
-          <MenuIcon
-            className={styles.menuIcon}
-            fontSize="large"
-            color="secondary"
-          />
           <Link href="/">
             {
               <HomeIcon

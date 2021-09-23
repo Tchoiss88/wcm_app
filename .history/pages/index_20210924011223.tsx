@@ -9,6 +9,7 @@ export default function Home() {
       <Box my={4}>
         <Typography variant="h4">Here will be my main</Typography>
       </Box>
+      <Button color="primary">Join Us</Button>
     </Container>
   );
 }
