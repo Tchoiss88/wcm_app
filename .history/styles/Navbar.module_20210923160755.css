@@ -1,3 +1,6 @@
+* {
+  text-decoration: none;
+}
 .navbar {
   height: 60px;
   background-color: #2b2b2b;
@@ -17,7 +20,6 @@
   text-align: center;
   padding: 14px 16px;
   font-size: 20px;
-  text-decoration: none;
 }
 
 .navbar a:hover {
@@ -51,21 +53,4 @@
 .linkShoppingBag:hover {
   cursor: pointer;
   color: #686868;
-}
-
-.login {
-  float: right;
-  margin-top: 14px;
-  margin-left: 20px;
-}
-
-.btnLogin {
-  font-size: 20px;
-  font-weight: 600;
-  padding: 3px;
-}
-
-.btnLogin:hover {
-  cursor: pointer;
-  background-color: #686868;
 }

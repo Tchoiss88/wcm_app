@@ -52,20 +52,3 @@
   cursor: pointer;
   color: #686868;
 }
-
-.login {
-  float: right;
-  margin-top: 14px;
-  margin-left: 20px;
-}
-
-.btnLogin {
-  font-size: 20px;
-  font-weight: 600;
-  padding: 3px;
-}
-
-.btnLogin:hover {
-  cursor: pointer;
-  background-color: #686868;
-}

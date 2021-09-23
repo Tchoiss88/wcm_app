@@ -40,16 +40,9 @@ const Navbar: NextPage = () => {
           <Link href="/order">Order</Link>
           <div className={styles.login}>
             {session ? (
-              <button className={styles.btnLogin} onClick={() => signOut()}>
-                Sign out
-              </button>
+              <button onClick={() => signOut()}>Sign out</button>
             ) : (
-              <button
-                className={styles.btnLogin}
-                onClick={() => signIn('auth0')}
-              >
-                Sign in
-              </button>
+              <button onClick={() => signIn('auth0')}>Sign in</button>
             )}
           </div>
         </Box>

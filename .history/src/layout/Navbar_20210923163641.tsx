@@ -1,3 +1,4 @@
+import { NextComponentType } from 'next';
 import type { NextPage } from 'next';
 import Link from 'next/link';
 import styles from 'styles/Navbar.module.css';
@@ -9,6 +10,12 @@ import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 
 const Navbar: NextPage = () => {
   const [session, loading] = useSession();
+  let btnLogin;
+  if (session) {
+    btnLogin = <button onClick={() => signOut()}>Sign out</button>;
+  } else {
+    btnLogin = <button onClick={() => signIn()}>Sign in</button>;
+  }
 
   return (
     <div className={styles.navbar}>
@@ -38,20 +45,7 @@ const Navbar: NextPage = () => {
         <Box className={styles.links}>
           <Link href="/about">About</Link>
           <Link href="/order">Order</Link>
-          <div className={styles.login}>
-            {session ? (
-              <button className={styles.btnLogin} onClick={() => signOut()}>
-                Sign out
-              </button>
-            ) : (
-              <button
-                className={styles.btnLogin}
-                onClick={() => signIn('auth0')}
-              >
-                Sign in
-              </button>
-            )}
-          </div>
+          <Link href="/signIn">Sign In</Link>
         </Box>
       </Container>
     </div>

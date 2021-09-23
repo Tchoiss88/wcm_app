@@ -55,17 +55,16 @@
 
 .login {
   float: right;
-  margin-top: 14px;
+  margin-top: 12px;
   margin-left: 20px;
 }
 
 .btnLogin {
   font-size: 20px;
   font-weight: 600;
-  padding: 3px;
+  padding: 5px;
 }
 
 .btnLogin:hover {
   cursor: pointer;
-  background-color: #686868;
 }

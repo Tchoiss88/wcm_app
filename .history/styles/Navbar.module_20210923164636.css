@@ -54,18 +54,8 @@
 }
 
 .login {
+  font-size: 20 px;
   float: right;
-  margin-top: 14px;
+  margin-top: 15px;
   margin-left: 20px;
-}
-
-.btnLogin {
-  font-size: 20px;
-  font-weight: 600;
-  padding: 3px;
-}
-
-.btnLogin:hover {
-  cursor: pointer;
-  background-color: #686868;
 }
