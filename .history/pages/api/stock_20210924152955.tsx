@@ -14,9 +14,7 @@ interface SuccessResponseType {
   worker: Boolean;
   address?: string;
   postalCode?: number;
-  orders: object[];
-  balance: number;
-  workHours: object[];
+  item: [firstName: string, price: number];
 }
 
 export default async (
@@ -74,8 +72,8 @@ export default async (
       worker,
       address,
       postalCode,
-      orders: orders || [],
-      workHours: workHours || [],
+      orders: orders || {},
+      workHours: workHours || {},
     });
 
     res.status(200).json(response.ops[0]);

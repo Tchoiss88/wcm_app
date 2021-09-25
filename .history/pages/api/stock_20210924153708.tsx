@@ -7,16 +7,9 @@ interface ErrorResponseType {
 
 interface SuccessResponseType {
   _id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  cellphone?: number;
-  worker: Boolean;
-  address?: string;
-  postalCode?: number;
-  orders: object[];
-  balance: number;
-  workHours: object[];
+  title: string;
+  rootName: string;
+  items: [_id: string, name: string, price: number, url: string, image: string];
 }
 
 export default async (
@@ -24,44 +17,11 @@ export default async (
   res: NextApiResponse<ErrorResponseType | SuccessResponseType>
 ): Promise<void> => {
   if (req.method === 'POST') {
-    const {
-      firstName,
-      lastName,
-      email,
-      cellphone,
-      worker,
-      address,
-      postalCode,
-      orders,
-      workHours,
-    } = req.body;
+    const { title, rootName, items } = req.body;
 
-    if (!worker) {
-      if (
-        !firstName ||
-        !lastName ||
-        !email ||
-        !cellphone ||
-        !address ||
-        !postalCode ||
-        !orders
-      ) {
-        res.status(400).json({ error: ` Missing body parameter!` });
-        return;
-      }
-    } else if (worker) {
-      if (
-        !firstName ||
-        !lastName ||
-        !email ||
-        !cellphone ||
-        !address ||
-        !postalCode ||
-        !workHours
-      ) {
-        res.status(400).json({ error: ` Missing body parameter!` });
-        return;
-      }
+    if (!title || !rootName || !items) {
+      res.status(400).json({ error: ` Missing body parameter!` });
+      return;
     }
 
     const { db } = await connect();
@@ -74,8 +34,8 @@ export default async (
       worker,
       address,
       postalCode,
-      orders: orders || [],
-      workHours: workHours || [],
+      orders: orders || {},
+      workHours: workHours || {},
     });
 
     res.status(200).json(response.ops[0]);

@@ -7,16 +7,9 @@ interface ErrorResponseType {
 
 interface SuccessResponseType {
   _id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  cellphone?: number;
-  worker: Boolean;
-  address?: string;
-  postalCode?: number;
-  orders: object[];
-  balance: number;
-  workHours: object[];
+  title: string;
+  rootName: string;
+  item: [_id: string, name: string, price: number, url: string, image: string];
 }
 
 export default async (
@@ -74,8 +67,8 @@ export default async (
       worker,
       address,
       postalCode,
-      orders: orders || [],
-      workHours: workHours || [],
+      orders: orders || {},
+      workHours: workHours || {},
     });
 
     res.status(200).json(response.ops[0]);
