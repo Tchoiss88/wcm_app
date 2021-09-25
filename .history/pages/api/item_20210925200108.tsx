@@ -47,7 +47,7 @@ export default async (
 
     const { db } = await connect();
 
-    const response = await db.collection('items').insertOne({
+    const item = await db.collection('items').insertOne({
       category,
       name,
       root_name,

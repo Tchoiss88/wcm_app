@@ -32,8 +32,8 @@ export default async (
   if (req.method === 'POST') {
     const session = await getSession({ req });
 
-    if (!session) {
-      res.status(400).json({ error: ` Please login first!` });
+    if (session) {
+    } else {
       return;
     }
 

@@ -30,13 +30,6 @@ export default async (
   >
 ): Promise<void> => {
   if (req.method === 'POST') {
-    const session = await getSession({ req });
-
-    if (!session) {
-      res.status(400).json({ error: ` Please login first!` });
-      return;
-    }
-
     const {
       email_create,
       email_modified,

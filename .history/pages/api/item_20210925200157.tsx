@@ -47,7 +47,7 @@ export default async (
 
     const { db } = await connect();
 
-    const response = await db.collection('items').insertOne({
+    const item = await db.collection('items').insertOne({
       category,
       name,
       root_name,
@@ -60,7 +60,7 @@ export default async (
       size,
     });
 
-    res.status(200).json(response.ops[0]);
+    res.status(200).json(item.ops[0]);
     //
   } else if (req.method === 'GET') {
     const { db } = await connect();
@@ -72,19 +72,19 @@ export default async (
       return;
     }
 
-    const response = await db
+    const item = await db
       .collection('items')
       .find({
         name,
       })
       .toArray();
 
-    if (response.length === 0) {
+    if (item.length === 0) {
       res.status(400).json({ error: `Name not found` });
       return;
     }
 
-    res.status(200).json(response);
+    res.status(200).json(item);
   } else {
     res.status(400).json({ error: ` Wrong request method!` });
   }
