@@ -13,7 +13,7 @@ export default async (
     const {
       category,
       name,
-      root_name,
+      rootName,
       genders,
       price,
       quantity,
@@ -26,7 +26,7 @@ export default async (
     if (
       !category ||
       !name ||
-      !root_name ||
+      !rootName ||
       !genders ||
       !price ||
       !quantity ||
@@ -39,10 +39,10 @@ export default async (
 
     const { db } = await connect();
 
-    const response = await db.collection('items').insertOne({
+    const response = await db.collection('stock').insertOne({
       category,
       name,
-      root_name,
+      rootName,
       genders,
       price,
       quantity,
@@ -60,18 +60,18 @@ export default async (
     const { name } = req.body;
 
     if (!name) {
-      res.status(400).json({ error: ` Missing name on request body` });
+      res.status(400).json({ error: ` Missing title on request body` });
       return;
     }
 
     const response = await db
-      .collection('items')
+      .collection('stock')
       .find({
         name,
       })
       .toArray();
 
-    if (response.length === 0) {
+    if (!response) {
       res.status(400).json({ error: `Name not found` });
       return;
     }

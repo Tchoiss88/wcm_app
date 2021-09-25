@@ -5,10 +5,6 @@ interface ErrorResponseType {
   error: string;
 }
 
-interface MessageSuccessType {
-  message: string;
-}
-
 interface SuccessResponseType {
   _id: string;
   first_name: string;
@@ -23,9 +19,7 @@ interface SuccessResponseType {
 
 export default async (
   req: NextApiRequest,
-  res: NextApiResponse<
-    ErrorResponseType | SuccessResponseType | MessageSuccessType
-  >
+  res: NextApiResponse<ErrorResponseType | SuccessResponseType>
 ): Promise<void> => {
   if (req.method === 'POST') {
     const {
@@ -78,7 +72,6 @@ export default async (
       workHours: work_hours || [],
     });
 
-    //TODO change the message
     res.status(200).json(response.ops[0]);
     //
   } else if (req.method === 'GET') {

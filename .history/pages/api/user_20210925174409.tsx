@@ -5,44 +5,41 @@ interface ErrorResponseType {
   error: string;
 }
 
-interface MessageSuccessType {
-  message: string;
-}
-
 interface SuccessResponseType {
   _id: string;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   cellphone?: number;
   worker: Boolean;
   address?: string;
+  postalCode?: number;
   orders: object[];
-  work_hours: object[];
+  balance: number;
+  workHours: object[];
 }
 
 export default async (
   req: NextApiRequest,
-  res: NextApiResponse<
-    ErrorResponseType | SuccessResponseType | MessageSuccessType
-  >
+  res: NextApiResponse<ErrorResponseType | SuccessResponseType>
 ): Promise<void> => {
   if (req.method === 'POST') {
     const {
-      first_name,
-      last_name,
+      firstName,
+      lastName,
       email,
       cellphone,
       worker,
       address,
+      postalCode,
       orders,
-      work_hours,
+      workHours,
     } = req.body;
 
     if (!worker) {
       if (
-        !first_name ||
-        !last_name ||
+        !firstName ||
+        !lastName ||
         !email ||
         !cellphone ||
         !address ||
@@ -53,12 +50,12 @@ export default async (
       }
     } else if (worker) {
       if (
-        !first_name ||
-        !last_name ||
+        !firstName ||
+        !lastName ||
         !email ||
         !cellphone ||
         !address ||
-        !work_hours
+        !workHours
       ) {
         res.status(400).json({ error: ` Missing body parameter!` });
         return;
@@ -68,17 +65,16 @@ export default async (
     const { db } = await connect();
 
     const response = await db.collection('users').insertOne({
-      first_name,
-      last_name,
+      firstName,
+      lastName,
       email,
       cellphone,
       worker,
       address,
       orders: orders || [],
-      workHours: work_hours || [],
+      workHours: workHours || [],
     });
 
-    //TODO change the message
     res.status(200).json(response.ops[0]);
     //
   } else if (req.method === 'GET') {

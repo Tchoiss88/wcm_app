@@ -5,15 +5,29 @@ interface ErrorResponseType {
   error: string;
 }
 
+interface SuccessResponseType {
+  _id: string;
+  category: string;
+  name: string;
+  rootName: string;
+  genders: string;
+  price: number;
+  quantity: number;
+  url?: string;
+  image?: any;
+  description: string;
+  size: string;
+}
+
 export default async (
   req: NextApiRequest,
-  res: NextApiResponse<ErrorResponseType | object[]>
+  res: NextApiResponse<ErrorResponseType | SuccessResponseType>
 ): Promise<void> => {
   if (req.method === 'POST') {
     const {
       category,
       name,
-      root_name,
+      rootName,
       genders,
       price,
       quantity,
@@ -26,7 +40,7 @@ export default async (
     if (
       !category ||
       !name ||
-      !root_name ||
+      !rootName ||
       !genders ||
       !price ||
       !quantity ||
@@ -39,10 +53,10 @@ export default async (
 
     const { db } = await connect();
 
-    const response = await db.collection('items').insertOne({
+    const response = await db.collection('stock').insertOne({
       category,
       name,
-      root_name,
+      rootName,
       genders,
       price,
       quantity,
@@ -57,21 +71,21 @@ export default async (
   } else if (req.method === 'GET') {
     const { db } = await connect();
 
-    const { name } = req.body;
+    const { category, name } = req.body;
 
-    if (!name) {
-      res.status(400).json({ error: ` Missing name on request body` });
+    if (!name || !category) {
+      res.status(400).json({ error: ` Missing title on request body` });
       return;
     }
 
     const response = await db
-      .collection('items')
+      .collection('stock')
       .find({
         name,
       })
       .toArray();
 
-    if (response.length === 0) {
+    if (!response) {
       res.status(400).json({ error: `Name not found` });
       return;
     }

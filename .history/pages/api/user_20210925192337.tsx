@@ -78,7 +78,6 @@ export default async (
       workHours: work_hours || [],
     });
 
-    //TODO change the message
     res.status(200).json(response.ops[0]);
     //
   } else if (req.method === 'GET') {

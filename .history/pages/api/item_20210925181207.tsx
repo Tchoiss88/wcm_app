@@ -39,7 +39,7 @@ export default async (
 
     const { db } = await connect();
 
-    const response = await db.collection('items').insertOne({
+    const response = await db.collection('stock').insertOne({
       category,
       name,
       root_name,
@@ -65,7 +65,7 @@ export default async (
     }
 
     const response = await db
-      .collection('items')
+      .collection('stock')
       .find({
         name,
       })
