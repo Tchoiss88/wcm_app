@@ -44,11 +44,10 @@ export default async (
   if (req.method === 'POST') {
     const session = await getSession({ req });
 
-    //TODO
-    // if (!session) {
-    //   res.status(400).json({ error: ` Please login first!` });
-    //   return;
-    // }
+    if (!session) {
+      res.status(400).json({ error: ` Please login first!` });
+      return;
+    }
 
     const {
       email_create,
@@ -59,15 +58,6 @@ export default async (
       owner_name,
       owner_cellphone,
       owner_email,
-    }: {
-      email_create: string;
-      email_modified: Record<string, string[]>;
-      date_created: Date;
-      items: Record<string, unknown[]>;
-      ship_address: string;
-      owner_name: string;
-      owner_cellphone: number;
-      owner_email: string;
     } = req.body;
 
     if (

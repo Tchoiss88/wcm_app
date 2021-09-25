@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/client';
-import connect from '../../utils/mongodb';
+import connect from '../../../utils/mongodb';
 import { ObjectId } from 'mongodb';
 
 interface ErrorResponseType {
@@ -41,7 +41,7 @@ export default async (
     ErrorResponseType | SuccessResponseType | MessageSuccessType
   >
 ): Promise<void> => {
-  if (req.method === 'POST') {
+  if (req.method === 'GET') {
     const session = await getSession({ req });
 
     //TODO
@@ -49,61 +49,6 @@ export default async (
     //   res.status(400).json({ error: ` Please login first!` });
     //   return;
     // }
-
-    const {
-      email_create,
-      email_modified,
-      date_created,
-      items,
-      ship_address,
-      owner_name,
-      owner_cellphone,
-      owner_email,
-    }: {
-      email_create: string;
-      email_modified: Record<string, string[]>;
-      date_created: Date;
-      items: Record<string, unknown[]>;
-      ship_address: string;
-      owner_name: string;
-      owner_cellphone: number;
-      owner_email: string;
-    } = req.body;
-
-    if (
-      !email_create ||
-      !date_created ||
-      !items ||
-      !ship_address ||
-      !owner_name ||
-      !owner_cellphone ||
-      !owner_email
-    ) {
-      res.status(400).json({ error: ` Missing body parameter!` });
-      return;
-    }
-
-    const { db } = await connect();
-
-    const order = {
-      email_create,
-      emailModified: email_modified || [],
-      date_created,
-      items,
-      ship_address,
-      owner_name,
-      owner_cellphone,
-      owner_email,
-    };
-
-    await db.collection('orders').insertOne(order);
-    await db
-      .collection('users')
-      .updateOne({ email: owner_email }, { $push: { orders: order } });
-
-    res.status(200).json({ message: `Order create successfully` });
-    //
-  } else if (req.method === 'GET') {
     const { db } = await connect();
 
     const { id } = req.body;

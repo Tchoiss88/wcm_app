@@ -102,7 +102,5 @@ export default async (
     //TODO change the message
     res.status(200).json(response.ops[0]);
     //
-  } else {
-    res.status(400).json({ error: ` Wrong request method!` });
   }
 };

@@ -27,10 +27,10 @@ export default async (
     const session = await getSession({ req });
 
     //TODO
-    // if (!session) {
-    //   res.status(400).json({ error: ` Please login first!` });
-    //   return;
-    // }
+    if (!session) {
+      res.status(400).json({ error: ` Please login first!` });
+      return;
+    }
 
     const {
       category,
