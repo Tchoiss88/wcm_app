@@ -17,13 +17,19 @@ const Navbar: NextPage = () => {
   const showMenu = () => setMenu(!menu);
   const [customerMenu] = useState(false);
   const [workerMenu] = useState(false);
-  const [worker, setWorker] = useState(false);
+  const [worker, setWorker] = useState(true);
 
   const [session] = useSession();
-
-  console.log(session, 'session');
-  const { data } = useSWR(`/api/user/${session?.user.email}`, api);
-  console.log(data, 'data');
+  const [data, setData] = useState({});
+  if (session) {
+    console.log(session, 'session');
+    const { data } = useSWR(`/api/user/${session?.user.email}`, api);
+    console.log(data, 'data');
+  } else {
+    console.log(session, 'not session');
+    const { data } = {};
+    console.log(data, 'data');
+  }
 
   // const { data } = useSWR(
   //   session.length !== 0 ?

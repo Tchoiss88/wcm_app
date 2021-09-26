@@ -4,37 +4,22 @@ import Link from 'next/link';
 import styles from 'styles/Navbar.module.css';
 import { session, signIn, signOut, useSession } from 'next-auth/client';
 import { useState } from 'react';
-import useSWR from 'swr';
 
 import { Container, Box } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
-import api from 'utils/api';
+import { setUncaughtExceptionCaptureCallback } from 'process';
 
 const Navbar: NextPage = () => {
   const [menu, setMenu] = useState(false);
   const showMenu = () => setMenu(!menu);
   const [customerMenu] = useState(false);
   const [workerMenu] = useState(false);
-  const [worker, setWorker] = useState(false);
 
   const [session] = useSession();
 
-  console.log(session, 'session');
-  const { data } = useSWR(`/api/user/${session?.user.email}`, api);
-  console.log(data, 'data');
-
-  // const { data } = useSWR(
-  //   session.length !== 0 ?
-  // console.log(data, 'data');
-
-  // if (data !== undefined) {
-  //   setWorker(data.data.worker);
-  //   return;
-  // }
-
-  // const { data, error } = useSWR(`/api/user.email${session}`, api);
+  console.log(session);
 
   return (
     <div className={styles.navbar}>
@@ -106,7 +91,7 @@ const Navbar: NextPage = () => {
           </div>
           <div
             className={
-              worker ? styles.workerMenuShow : styles.workerMenuNotShow
+              session ? styles.workerMenuShow : styles.workerMenuNotShow
             }
           >
             <Link href="/createItem">Create Item</Link>

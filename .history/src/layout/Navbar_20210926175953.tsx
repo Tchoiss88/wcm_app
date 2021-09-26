@@ -17,7 +17,7 @@ const Navbar: NextPage = () => {
   const showMenu = () => setMenu(!menu);
   const [customerMenu] = useState(false);
   const [workerMenu] = useState(false);
-  const [worker, setWorker] = useState(false);
+  // const [worker, setWorker] = useState(true);
 
   const [session] = useSession();
 
@@ -105,9 +105,9 @@ const Navbar: NextPage = () => {
             <Link href="/order">Order</Link> <br />
           </div>
           <div
-            className={
-              worker ? styles.workerMenuShow : styles.workerMenuNotShow
-            }
+          // className={
+          // worker ? styles.workerMenuShow : styles.workerMenuNotShow
+          // }
           >
             <Link href="/createItem">Create Item</Link>
             <br />

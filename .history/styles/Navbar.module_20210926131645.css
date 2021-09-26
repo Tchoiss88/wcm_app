@@ -91,14 +91,6 @@
   display: block;
 }
 
-.customerMenuNotShow {
-  display: none;
-}
-
-.workerMenuShow {
-  display: block;
-}
-
-.workerMenuNotShow {
+..customerMenuNotShow {
   display: none;
 }

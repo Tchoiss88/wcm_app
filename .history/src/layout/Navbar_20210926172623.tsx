@@ -17,24 +17,15 @@ const Navbar: NextPage = () => {
   const showMenu = () => setMenu(!menu);
   const [customerMenu] = useState(false);
   const [workerMenu] = useState(false);
-  const [worker, setWorker] = useState(false);
 
   const [session] = useSession();
 
-  console.log(session, 'session');
-  const { data } = useSWR(`/api/user/${session?.user.email}`, api);
+  const { data } = useSWR( session?`/api/user/${session?.user.email}`, api);
+
   console.log(data, 'data');
-
-  // const { data } = useSWR(
-  //   session.length !== 0 ?
-  // console.log(data, 'data');
-
-  // if (data !== undefined) {
-  //   setWorker(data.data.worker);
-  //   return;
-  // }
-
   // const { data, error } = useSWR(`/api/user.email${session}`, api);
+
+  console.log(session, 'session');
 
   return (
     <div className={styles.navbar}>
@@ -106,7 +97,7 @@ const Navbar: NextPage = () => {
           </div>
           <div
             className={
-              worker ? styles.workerMenuShow : styles.workerMenuNotShow
+              data !== {} ? styles.workerMenuShow : styles.workerMenuNotShow
             }
           >
             <Link href="/createItem">Create Item</Link>

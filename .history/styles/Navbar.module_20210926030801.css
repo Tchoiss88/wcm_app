@@ -80,25 +80,9 @@
   position: absolute;
   display: block;
   padding: 20px;
-  margin-top: 60px;
+  margin-top: 63px;
 }
 
 .menuBoxNotShow {
-  display: none;
-}
-
-.customerMenuShow {
-  display: block;
-}
-
-.customerMenuNotShow {
-  display: none;
-}
-
-.workerMenuShow {
-  display: block;
-}
-
-.workerMenuNotShow {
   display: none;
 }

@@ -2,7 +2,7 @@ import type { NextPage } from 'next';
 import React from 'react';
 import Link from 'next/link';
 import styles from 'styles/Navbar.module.css';
-import { session, signIn, signOut, useSession } from 'next-auth/client';
+import { signIn, signOut, useSession } from 'next-auth/client';
 import { useState } from 'react';
 import useSWR from 'swr';
 
@@ -17,12 +17,15 @@ const Navbar: NextPage = () => {
   const showMenu = () => setMenu(!menu);
   const [customerMenu] = useState(false);
   const [workerMenu] = useState(false);
-  const [worker, setWorker] = useState(false);
+  const [worker, setWorker] = useState(true);
 
   const [session] = useSession();
-
   console.log(session, 'session');
-  const { data } = useSWR(`/api/user/${session?.user.email}`, api);
+
+  const { data, error } = useSWR(
+    session != null ? `/api/user/${session?.user.email}` : null,
+    api
+  );
   console.log(data, 'data');
 
   // const { data } = useSWR(

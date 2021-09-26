@@ -20,10 +20,7 @@ const Navbar: NextPage = () => {
   const [worker, setWorker] = useState(false);
 
   const [session] = useSession();
-
   console.log(session, 'session');
-  const { data } = useSWR(`/api/user/${session?.user.email}`, api);
-  console.log(data, 'data');
 
   // const { data } = useSWR(
   //   session.length !== 0 ?

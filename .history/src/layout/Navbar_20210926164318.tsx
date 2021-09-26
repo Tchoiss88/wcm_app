@@ -2,7 +2,7 @@ import type { NextPage } from 'next';
 import React from 'react';
 import Link from 'next/link';
 import styles from 'styles/Navbar.module.css';
-import { session, signIn, signOut, useSession } from 'next-auth/client';
+import { signIn, signOut, useSession } from 'next-auth/client';
 import { useState } from 'react';
 import useSWR from 'swr';
 
@@ -17,24 +17,11 @@ const Navbar: NextPage = () => {
   const showMenu = () => setMenu(!menu);
   const [customerMenu] = useState(false);
   const [workerMenu] = useState(false);
-  const [worker, setWorker] = useState(false);
 
-  const [session] = useSession();
-
-  console.log(session, 'session');
-  const { data } = useSWR(`/api/user/${session?.user.email}`, api);
-  console.log(data, 'data');
-
-  // const { data } = useSWR(
-  //   session.length !== 0 ?
-  // console.log(data, 'data');
-
-  // if (data !== undefined) {
-  //   setWorker(data.data.worker);
-  //   return;
-  // }
-
+  const [data:session] = useSession();
   // const { data, error } = useSWR(`/api/user.email${session}`, api);
+
+  console.log(data, 'session');
 
   return (
     <div className={styles.navbar}>
@@ -106,7 +93,7 @@ const Navbar: NextPage = () => {
           </div>
           <div
             className={
-              worker ? styles.workerMenuShow : styles.workerMenuNotShow
+              session ? styles.workerMenuShow : styles.workerMenuNotShow
             }
           >
             <Link href="/createItem">Create Item</Link>

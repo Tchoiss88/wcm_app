@@ -86,19 +86,3 @@
 .menuBoxNotShow {
   display: none;
 }
-
-.customerMenuShow {
-  display: block;
-}
-
-.customerMenuNotShow {
-  display: none;
-}
-
-.workerMenuShow {
-  display: block;
-}
-
-.workerMenuNotShow {
-  display: none;
-}
