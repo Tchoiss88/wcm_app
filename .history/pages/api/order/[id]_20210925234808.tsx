@@ -59,6 +59,5 @@ export default async (
     res.status(200).json(response);
   } else {
     res.status(400).json({ error: ` Wrong request method!` });
-    return;
   }
 };

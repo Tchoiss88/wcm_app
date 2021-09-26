@@ -60,14 +60,6 @@ const Navbar: NextPage = () => {
             )}
           </div>
         </Box>
-        {/*
-        
-        1. icon for close the menu
-        2. edit profile
-        3. move order to the menuBox
-        4. create item
-
-         */}
         <Box className={styles.menuBox}>
           <h1> My menu</h1>
         </Box>

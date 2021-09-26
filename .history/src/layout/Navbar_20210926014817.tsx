@@ -43,8 +43,8 @@ const Navbar: NextPage = () => {
         </Box>
         <Box className={styles.links}>
           <Link href="/about">About</Link>
+          {`${session ? <Link href="/order">Order</Link> : 'Join us'}`}
 
-          <Link href={` ${session ? '/order' : `/`}`}>Order</Link>
           <div className={styles.login}>
             {session ? (
               <button className={styles.btnLogin} onClick={() => signOut()}>
@@ -59,17 +59,6 @@ const Navbar: NextPage = () => {
               </button>
             )}
           </div>
-        </Box>
-        {/*
-        
-        1. icon for close the menu
-        2. edit profile
-        3. move order to the menuBox
-        4. create item
-
-         */}
-        <Box className={styles.menuBox}>
-          <h1> My menu</h1>
         </Box>
       </Container>
     </div>

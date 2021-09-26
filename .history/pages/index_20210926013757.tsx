@@ -26,11 +26,12 @@ export default function Home() {
     <Container className={styles.page}>
       <Grid>
         <h1>
+          {' '}
           {` ${
             session
-              ? `Welcome ${session.user.email} to WCM.`
-              : 'Join us and get first order discount.'
-          }`}
+              ? `Welcome ${session.user.email} to WCM`
+              : 'Join us and get more discount'
+          }`}{' '}
         </h1>
       </Grid>
     </Container>

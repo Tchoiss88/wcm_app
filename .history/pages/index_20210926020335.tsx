@@ -28,8 +28,8 @@ export default function Home() {
         <h1>
           {` ${
             session
-              ? `Welcome ${session.user.email} to WCM.`
-              : 'Join us and get first order discount.'
+              ? `Welcome ${session.user.email} to WCM`
+              : 'Join us and get first order discount'
           }`}
         </h1>
       </Grid>

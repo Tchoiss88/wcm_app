@@ -2,35 +2,37 @@ import React from 'react';
 import styles from '../styles/Home.module.css';
 import { Container, Box, Grid } from '@mui/material';
 import useSWR from 'swr';
-import { useSession } from 'next-auth/client';
+import { signIn, signOut, useSession } from 'next-auth/client';
 import api from 'utils/api';
 
 export default function Home() {
   const [session, loading] = useSession();
-
-  const { data, error } = useSWR(
-    `/api/user/${session ? session.user.email : ''}`,
-    api
-  );
-
-  console.log(session);
-
-  if (error) {
-    console.log(error);
+  if (session !=== undefined) {
+    
+    const { data, error } = useSWR(
+      `/api/user/${session.user.email as string}`,
+      api
+    );
+  
+    console.log(session);
+  
+    if (error) {
+      console.log(error);
+    }
+    if (data) {
+      console.log(data);
+    }
   }
-  if (data) {
-    console.log(data);
-  }
+
 
   return (
     <Container className={styles.page}>
       <Grid>
         <h1>
-          {` ${
-            session
-              ? `Welcome ${session.user.email} to WCM.`
-              : 'Join us and get first order discount.'
-          }`}
+          {' '}
+          {`Welcome to WCM ${
+            session ? (session.user.email as string) : 'yes'
+          }`}{' '}
         </h1>
       </Grid>
     </Container>
