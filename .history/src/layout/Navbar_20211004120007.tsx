@@ -18,7 +18,7 @@ const Navbar: NextPage = () => {
   const [session] = useSession();
 
   const { data } = useSWR(`/api/user/${session?.user.email}`, api);
-  const user = data ? data.data.worker : false;
+  let user = data ? data.data.worker : false;
 
   console.log(session, 'session');
   console.log(data, 'data');

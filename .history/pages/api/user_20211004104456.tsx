@@ -94,9 +94,7 @@ export default async (
     });
 
     res.status(200).json(response.ops[0]);
-    return;
   } else {
     res.status(400).json({ error: ` Wrong request method!` });
-    return;
   }
 };

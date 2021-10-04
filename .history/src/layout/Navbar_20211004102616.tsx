@@ -15,14 +15,28 @@ import api from 'utils/api';
 const Navbar: NextPage = () => {
   const [menu, setMenu] = useState(false);
   const showMenu = () => setMenu(!menu);
+  // const [customerMenu] = useState(false);
+  // const [workerMenu] = useState(false);
+  // const [worker, setWorker] = useState(false);
+
+  let worker = false;
+
   const [session] = useSession();
 
-  const { data } = useSWR(`/api/user/${session?.user.email}`, api);
-  const user = data ? data.data.worker : false;
-
   console.log(session, 'session');
+  const { data } = useSWR(`/api/user/${session?.user.email}`, api);
   console.log(data, 'data');
-  console.log(user, 'user');
+
+  // const { data } = useSWR(
+  //   session.length !== 0 ?
+  // console.log(data, 'data');
+
+  // if (data !== undefined) {
+  //   setWorker(data.data.worker);
+  //   return;
+  // }
+
+  // const { data, error } = useSWR(`/api/user.email${session}`, api);
 
   return (
     <div className={styles.navbar}>
@@ -85,7 +99,9 @@ const Navbar: NextPage = () => {
             <Link href="/order">Order</Link> <br />
           </div>
           <div
-            className={user ? styles.workerMenuShow : styles.workerMenuNotShow}
+            className={
+              worker ? styles.workerMenuShow : styles.workerMenuNotShow
+            }
           >
             <Link href="/createItem">Create Item</Link>
             <br />

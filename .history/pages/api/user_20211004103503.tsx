@@ -5,6 +5,10 @@ interface ErrorResponseType {
   error: string;
 }
 
+interface MessageSuccessType {
+  message: string;
+}
+
 interface SuccessResponseType {
   _id: string;
   first_name: string;
@@ -31,7 +35,9 @@ interface User {
 
 export default async (
   req: NextApiRequest,
-  res: NextApiResponse<ErrorResponseType | SuccessResponseType>
+  res: NextApiResponse<
+    ErrorResponseType | SuccessResponseType | MessageSuccessType
+  >
 ): Promise<void> => {
   if (req.method === 'POST') {
     const {
@@ -50,8 +56,8 @@ export default async (
       cellphone?: number;
       worker: Boolean;
       address?: string;
-      orders: Record<string, string[]>;
-      work_hours: Record<string, string[]>;
+      orders: [];
+      work_hours: [];
     } = req.body;
 
     if (!worker) {
@@ -90,13 +96,13 @@ export default async (
       worker,
       address,
       orders: orders || [],
-      work_hours: work_hours || [],
+      work_Hours: work_hours || [],
     });
 
+    //TODO change the message
     res.status(200).json(response.ops[0]);
-    return;
+    //
   } else {
     res.status(400).json({ error: ` Wrong request method!` });
-    return;
   }
 };

@@ -11,6 +11,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import api from 'utils/api';
+import console from 'console';
 
 const Navbar: NextPage = () => {
   const [menu, setMenu] = useState(false);
@@ -18,7 +19,7 @@ const Navbar: NextPage = () => {
   const [session] = useSession();
 
   const { data } = useSWR(`/api/user/${session?.user.email}`, api);
-  const user = data ? data.data.worker : false;
+  let user = data ? data.data.worker : false;
 
   console.log(session, 'session');
   console.log(data, 'data');

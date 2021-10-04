@@ -2,7 +2,7 @@ import type { NextPage } from 'next';
 import React from 'react';
 import Link from 'next/link';
 import styles from 'styles/Navbar.module.css';
-import { signIn, signOut, useSession } from 'next-auth/client';
+import { session, signIn, signOut, useSession } from 'next-auth/client';
 import { useState } from 'react';
 import useSWR from 'swr';
 
@@ -18,11 +18,26 @@ const Navbar: NextPage = () => {
   const [session] = useSession();
 
   const { data } = useSWR(`/api/user/${session?.user.email}`, api);
-  const user = data ? data.data.worker : false;
+  let user;
 
   console.log(session, 'session');
-  console.log(data, 'data');
-  console.log(user, 'user');
+
+  // if (session !== null) {
+  //
+  //   user = data;
+  // }
+
+  console.log(user, 'data');
+  // const { data } = useSWR(
+  //   session.length !== 0 ?
+  // console.log(data, 'data');
+
+  // if (data !== undefined) {
+  //   setWorker(data.data.worker);
+  //   return;
+  // }
+
+  // const { data, error } = useSWR(`/api/user.email${session}`, api);
 
   return (
     <div className={styles.navbar}>

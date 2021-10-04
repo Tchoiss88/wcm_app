@@ -15,14 +15,26 @@ import api from 'utils/api';
 const Navbar: NextPage = () => {
   const [menu, setMenu] = useState(false);
   const showMenu = () => setMenu(!menu);
+  const [customerMenu] = useState(false);
+  const [workerMenu] = useState(false);
+  const [worker, setWorker] = useState(false);
+
   const [session] = useSession();
 
-  const { data } = useSWR(`/api/user/${session?.user.email}`, api);
-  const user = data ? data.data.worker : false;
-
   console.log(session, 'session');
+  const { data } = useSWR(`/api/user/${session?.user.email}`, api);
   console.log(data, 'data');
-  console.log(user, 'user');
+
+  // const { data } = useSWR(
+  //   session.length !== 0 ?
+  // console.log(data, 'data');
+
+  // if (data !== undefined) {
+  //   setWorker(data.data.worker);
+  //   return;
+  // }
+
+  // const { data, error } = useSWR(`/api/user.email${session}`, api);
 
   return (
     <div className={styles.navbar}>
@@ -73,7 +85,15 @@ const Navbar: NextPage = () => {
             )}
           </div>
         </Box>
+        {/*
+        
+        1. icon for close the menu
+        2. edit profile
+        3. render the menu box if you ar loged in 
+        4. create item
+        {session ? href="/order":}
 
+         */}
         <Box className={menu ? styles.menuBoxShow : styles.menuBoxNotShow}>
           <Link href="/shop">Shop</Link> <br />
           <div
@@ -85,11 +105,13 @@ const Navbar: NextPage = () => {
             <Link href="/order">Order</Link> <br />
           </div>
           <div
-            className={user ? styles.workerMenuShow : styles.workerMenuNotShow}
+            className={
+              worker ? styles.workerMenuShow : styles.workerMenuNotShow
+            }
           >
             <Link href="/createItem">Create Item</Link>
             <br />
-            <Link href="/createUser">Create User</Link>
+            <Link href="createUser">Create User</Link>
           </div>
         </Box>
       </Container>
