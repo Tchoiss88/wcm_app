@@ -1,8 +1,9 @@
 import type { NextPage } from 'next';
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import styles from 'styles/Navbar.module.css';
 import { signIn, signOut, useSession } from 'next-auth/client';
+import { useState, useEffect, useRef } from 'react';
 import useSWR from 'swr';
 
 import { Container, Box } from '@mui/material';
@@ -10,25 +11,6 @@ import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import api from 'utils/api';
-
-let useClickOutside = (handler) => {
-  let domNode = useRef();
-
-  useEffect(() => {
-    let maybeHandler = (event) => {
-      if (!domNode.current.contains(event.target)) {
-        handler();
-      }
-    };
-    document.addEventListener('mousedown', maybeHandler);
-
-    return () => {
-      document.removeEventListener('mousedown', maybeHandler);
-    };
-  });
-
-  return domNode;
-};
 
 const Navbar: NextPage = () => {
   const [menu, setMenu] = useState(false);
@@ -38,15 +20,22 @@ const Navbar: NextPage = () => {
   const { data } = useSWR(`/api/user/${session?.user.email}`, api);
   const user = data ? data.data.worker : false;
 
-  let domNode = useClickOutside(() => {
-    setMenu(false);
+  useEffect(() => {
+    document.addEventListener('mousedown', (event) => {
+      if (!menuRef.current.contains(event.target)) {
+        setMenu(false);
+      }
+    });
   });
+
+  let menuRef = useRef;
 
   return (
     <div className={styles.navbar}>
       <Container>
         <Box className={styles.menu}>
           <MenuIcon
+            ref={menuRef}
             className={styles.menuIcon}
             fontSize="large"
             color="secondary"
@@ -92,10 +81,7 @@ const Navbar: NextPage = () => {
           </div>
         </Box>
 
-        <Box
-          ref={domNode}
-          className={menu ? styles.menuBoxShow : styles.menuBoxNotShow}
-        >
+        <Box className={menu ? styles.menuBoxShow : styles.menuBoxNotShow}>
           <Link href="/shop">Shop</Link> <br />
           <div
             className={

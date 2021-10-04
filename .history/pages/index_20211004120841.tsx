@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from '../styles/Home.module.css';
-import { Container, Grid } from '@mui/material';
+import { Container, Box, Grid } from '@mui/material';
 import useSWR from 'swr';
 import { useSession } from 'next-auth/client';
 import api from 'utils/api';
@@ -8,10 +8,10 @@ import api from 'utils/api';
 export default function Home() {
   const [session, loading] = useSession();
 
-  const { data, error } = useSWR(
-    `/api/user/${session ? session.user.email : ''}`,
-    api
-  );
+  // const { data, error } = useSWR(
+  //   `/api/user/${session ? session.user.email : ''}`,
+  //   api
+  // );
 
   return (
     <Container className={styles.page}>

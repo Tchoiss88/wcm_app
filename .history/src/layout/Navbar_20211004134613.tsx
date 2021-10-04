@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useClickOutside } from 'react';
 import Link from 'next/link';
 import styles from 'styles/Navbar.module.css';
 import { signIn, signOut, useSession } from 'next-auth/client';
@@ -11,24 +11,18 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import api from 'utils/api';
 
-let useClickOutside = (handler) => {
-  let domNode = useRef();
+useEffect(() => {
+  let handler = (event) => {
+    if (!menuRef.current.contains(event.target)) {
+      setMenu(false);
+    }
+  };
+  document.addEventListener('mousedown', handler);
 
-  useEffect(() => {
-    let maybeHandler = (event) => {
-      if (!domNode.current.contains(event.target)) {
-        handler();
-      }
-    };
-    document.addEventListener('mousedown', maybeHandler);
-
-    return () => {
-      document.removeEventListener('mousedown', maybeHandler);
-    };
-  });
-
-  return domNode;
-};
+  return () => {
+    document.removeEventListener('mousedown', handler);
+  };
+});
 
 const Navbar: NextPage = () => {
   const [menu, setMenu] = useState(false);
@@ -37,6 +31,7 @@ const Navbar: NextPage = () => {
 
   const { data } = useSWR(`/api/user/${session?.user.email}`, api);
   const user = data ? data.data.worker : false;
+  let menuRef = useRef();
 
   let domNode = useClickOutside(() => {
     setMenu(false);
@@ -93,7 +88,7 @@ const Navbar: NextPage = () => {
         </Box>
 
         <Box
-          ref={domNode}
+          ref={menuRef}
           className={menu ? styles.menuBoxShow : styles.menuBoxNotShow}
         >
           <Link href="/shop">Shop</Link> <br />

@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useClickOutside } from 'react';
 import Link from 'next/link';
 import styles from 'styles/Navbar.module.css';
 import { signIn, signOut, useSession } from 'next-auth/client';
@@ -15,15 +15,15 @@ let useClickOutside = (handler) => {
   let domNode = useRef();
 
   useEffect(() => {
-    let maybeHandler = (event) => {
-      if (!domNode.current.contains(event.target)) {
-        handler();
+    let handler = (event) => {
+      if (!menuRef.current.contains(event.target)) {
+        setMenu(false);
       }
     };
-    document.addEventListener('mousedown', maybeHandler);
+    document.addEventListener('mousedown', handler);
 
     return () => {
-      document.removeEventListener('mousedown', maybeHandler);
+      document.removeEventListener('mousedown', handler);
     };
   });
 
@@ -93,7 +93,7 @@ const Navbar: NextPage = () => {
         </Box>
 
         <Box
-          ref={domNode}
+          ref={menuRef}
           className={menu ? styles.menuBoxShow : styles.menuBoxNotShow}
         >
           <Link href="/shop">Shop</Link> <br />

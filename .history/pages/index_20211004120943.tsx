@@ -6,12 +6,7 @@ import { useSession } from 'next-auth/client';
 import api from 'utils/api';
 
 export default function Home() {
-  const [session, loading] = useSession();
-
-  const { data, error } = useSWR(
-    `/api/user/${session ? session.user.email : ''}`,
-    api
-  );
+  const [session] = useSession();
 
   return (
     <Container className={styles.page}>

@@ -93,7 +93,7 @@ const Navbar: NextPage = () => {
         </Box>
 
         <Box
-          ref={domNode}
+          ref={menuRef}
           className={menu ? styles.menuBoxShow : styles.menuBoxNotShow}
         >
           <Link href="/shop">Shop</Link> <br />
