@@ -30,16 +30,6 @@ export default async (
   >
 ): Promise<void> => {
   if (req.method === 'GET') {
-    const session = await getSession({ req });
-
-    console.log(session, 'session');
-
-    // TODO:
-    // if (!session) {
-    //   res.status(400).json({ error: ` Please login first!` });
-    //   return;
-    // }
-
     const { db } = await connect();
 
     const { id } = req.query;
@@ -49,12 +39,12 @@ export default async (
       return;
     }
 
-    const response = await db.collection('orders').findOne({
+    const response = await db.collection('items').findOne({
       _id: new ObjectId(id),
     });
 
     if (!response) {
-      res.status(400).json({ error: `The order with ID=${id} was not found` });
+      res.status(400).json({ error: `The item with ID=${id} was not found` });
       return;
     }
 

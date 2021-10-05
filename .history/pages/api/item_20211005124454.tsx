@@ -14,6 +14,7 @@ interface item {
   price: number;
   quantity: number;
   url: string;
+  image: string;
   description: string;
   size: string;
 }

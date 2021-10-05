@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { getSession } from 'next-auth/client';
 import connect from '../../../utils/mongodb';
 
 interface ErrorResponseType {
@@ -35,18 +36,16 @@ export default async (
     const response = await db
       .collection('items')
       .find({
-        name,
+        name: { $in: [new RegExp(`^${name}`, 'g')] },
       })
       .toArray();
-
-    //: { $in: [new RegExp(`^${name}`, 'g')] }
 
     if (response.length === 0) {
       res.status(400).json({ error: `Name not found` });
       return;
     }
 
-    res.status(200);
+    res.status(200).json(response);
   } else {
     res.status(400).json({ error: ` Wrong request method!` });
   }

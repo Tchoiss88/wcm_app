@@ -1,11 +1,13 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { getSession } from 'next-auth/client';
 import connect from '../../../utils/mongodb';
+import { ObjectId } from 'mongodb';
 
 interface ErrorResponseType {
   error: string;
 }
 
-interface Item {
+interface SuccessResponseType {
   _id: string;
   category: string;
   name: string;
@@ -20,34 +22,30 @@ interface Item {
 
 export default async (
   req: NextApiRequest,
-  res: NextApiResponse<ErrorResponseType | Item>
+  res: NextApiResponse<ErrorResponseType | SuccessResponseType>
 ): Promise<void> => {
   if (req.method === 'GET') {
     const { db } = await connect();
 
-    const { name } = req.query;
+    const { id } = req.query;
 
-    if (!name) {
-      res.status(400).json({ error: ` Missing name on request body` });
+    if (!id) {
+      res.status(400).json({ error: ` Missing Id on request body` });
       return;
     }
 
-    const response = await db
-      .collection('items')
-      .find({
-        name,
-      })
-      .toArray();
+    const response = await db.collection('items').findOne({
+      _id: new ObjectId(id),
+    });
 
-    //: { $in: [new RegExp(`^${name}`, 'g')] }
-
-    if (response.length === 0) {
-      res.status(400).json({ error: `Name not found` });
+    if (!response) {
+      res.status(400).json({ error: `The item with ID=${id} was not found` });
       return;
     }
 
-    res.status(200);
+    res.status(200).json(response);
   } else {
     res.status(400).json({ error: ` Wrong request method!` });
+    return;
   }
 };

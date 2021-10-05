@@ -34,11 +34,10 @@ export default async (
 
     console.log(session, 'session');
 
-    // TODO:
-    // if (!session) {
-    //   res.status(400).json({ error: ` Please login first!` });
-    //   return;
-    // }
+    if (!session) {
+      res.status(400).json({ error: ` Please login first!` });
+      return;
+    }
 
     const { db } = await connect();
 

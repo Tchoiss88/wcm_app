@@ -6,7 +6,7 @@ import useSWR from 'swr';
 import api from 'utils/api';
 
 const Profile: NextPage = () => {
-  const [session, loading] = useSession();
+  const [session] = useSession();
   const { data, error } = useSWR(`/api/user/${session?.user.email}`, api);
 
   return (

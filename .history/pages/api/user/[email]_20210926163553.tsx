@@ -5,6 +5,10 @@ interface ErrorResponseType {
   error: string;
 }
 
+interface MessageSuccessType {
+  message: string;
+}
+
 interface SuccessResponseType {
   _id: string;
   first_name: string;
@@ -31,7 +35,9 @@ interface User {
 
 export default async (
   req: NextApiRequest,
-  res: NextApiResponse<ErrorResponseType | SuccessResponseType>
+  res: NextApiResponse<
+    ErrorResponseType | SuccessResponseType | MessageSuccessType
+  >
 ): Promise<void> => {
   if (req.method === 'GET') {
     const { db } = await connect();

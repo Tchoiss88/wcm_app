@@ -35,11 +35,9 @@ export default async (
     const response = await db
       .collection('items')
       .find({
-        name,
+        name: { $in: [new RegExp(`^${name}`, 'g')] },
       })
       .toArray();
-
-    //: { $in: [new RegExp(`^${name}`, 'g')] }
 
     if (response.length === 0) {
       res.status(400).json({ error: `Name not found` });

@@ -14,6 +14,7 @@ interface item {
   price: number;
   quantity: number;
   url: string;
+  image: string;
   description: string;
   size: string;
 }
@@ -39,6 +40,7 @@ export default async (
       price,
       quantity,
       url,
+
       description,
       size,
     }: {
@@ -49,6 +51,7 @@ export default async (
       price: number;
       quantity: number;
       url: string;
+      image: string;
       description: string;
       size: string;
     } = req.body;
@@ -77,6 +80,7 @@ export default async (
       price,
       quantity,
       url: url || null,
+      image: image || null,
       description,
       size,
     });
