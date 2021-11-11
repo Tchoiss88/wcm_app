@@ -1,4 +1,5 @@
 import type { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import styles from 'styles/Navbar.module.css';
@@ -34,6 +35,7 @@ const Navbar: NextPage = () => {
   const [menu, setMenu] = useState(false);
   const showMenu = () => setMenu(!menu);
   const [session] = useSession();
+  const router = useRouter();
 
   const { data } = useSWR(`/api/user/${session?.user.email}`, api);
   const user = data ? data.data.worker : false;
@@ -78,7 +80,13 @@ const Navbar: NextPage = () => {
 
           <div className={styles.login}>
             {session ? (
-              <button className={styles.btnLogin} onClick={() => signOut()}>
+              <button
+                className={styles.btnLogin}
+                onClick={async () => {
+                  await router.push('/');
+                  await signOut();
+                }}
+              >
                 Sign out
               </button>
             ) : (
@@ -111,6 +119,8 @@ const Navbar: NextPage = () => {
             <Link href="/createItem">Create Item</Link>
             <br />
             <Link href="/createUser">Create User</Link>
+            <br />
+            <Link href="/stock">Stock</Link>
           </div>
         </Box>
       </Container>

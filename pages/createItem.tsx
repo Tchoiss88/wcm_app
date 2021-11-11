@@ -1,13 +1,10 @@
-import type { NextPage } from 'next';
-import { Container } from '@mui/material';
-import styles from 'styles/CreateItem.module.css';
+import React from 'react';
+import CreateItemComponent from 'src/components/CreateItemComponent';
 
-const CreateItem: NextPage = () => {
+export default function createUser() {
   return (
-    <Container className={styles.page}>
-      <h1>Create User</h1>
-    </Container>
+    <>
+      <CreateItemComponent />;
+    </>
   );
-};
-
-export default CreateItem;
+}
