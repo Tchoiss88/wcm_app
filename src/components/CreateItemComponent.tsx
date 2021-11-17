@@ -24,7 +24,7 @@ interface State {
   insertDate: Date | null;
   url?: string;
   description: string;
-  size: string;
+  size?: string;
 }
 
 const initialFormValues = {
@@ -229,7 +229,6 @@ export default function CreateUserComponent() {
               </Grid>
               <Grid item xs={4}>
                 <TextField
-                  required
                   fullWidth
                   id="size"
                   select

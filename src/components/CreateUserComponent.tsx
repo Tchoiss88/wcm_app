@@ -46,6 +46,24 @@ const initialFormValues = {
   hoursForWeek: [],
 };
 
+const hoursToWorkForWeek = [
+  {
+    value: 40,
+    label: 'Full Time 8h for day',
+  },
+  {
+    value: 30,
+    label: 'Part-Time 6h for day',
+  },
+  {
+    value: 25,
+    label: 'Part-Time 5h for day',
+  },
+  {
+    value: 20,
+    label: 'Part-Time 4h for day',
+  },
+];
 const genders = [
   {
     value: 'female',
@@ -251,7 +269,7 @@ export default function CreateUserComponent() {
                   }}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={4}>
                 <TextField
                   required
                   fullWidth
@@ -269,9 +287,27 @@ export default function CreateUserComponent() {
                   ))}
                 </TextField>
               </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  required
+                  fullWidth
+                  id="hoursWeek"
+                  select
+                  label="Hours For Day "
+                  value={values.hoursForWeek}
+                  onChange={handleChange('hoursForWeek')}
+                  variant="standard"
+                >
+                  {hoursToWorkForWeek.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
               <Grid
                 item
-                xs={6}
+                xs={4}
                 container
                 direction="row"
                 justifyContent="center"

@@ -3,10 +3,12 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
 
 const paperStyles = { padding: '10px 10px', width: '100%' };
 const imgCardStyles = { width: '100%', height: '200px' };
-export default function Item() {
+
+export default function ItemStock() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
@@ -62,6 +64,16 @@ export default function Item() {
             >
               <span>Id:</span>
               <span>ds554sf4s545sa978e7f</span>
+            </Grid>
+            <Grid
+              container
+              direction="row"
+              justifyContent="space-around"
+              alignItems="center"
+              xs={12}
+            >
+              <Button variant="contained">Add</Button>
+              <Button variant="contained">Remove</Button>
             </Grid>
           </Paper>
         </Grid>

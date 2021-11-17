@@ -1,8 +1,8 @@
 import React from 'react';
 import { Container, Grid, Box } from '@mui/material';
-import Item from 'src/components/Item';
+import ItemStock from 'src/components/ItemStock';
 
-export default function createUser() {
+export default function Stock() {
   return (
     <Container>
       <Grid container>
@@ -24,7 +24,7 @@ export default function createUser() {
           >
             {Array.from(Array(8)).map((_, index) => (
               <Grid item xs={2} sm={3} md={3} key={index}>
-                <Item />
+                <ItemStock />
               </Grid>
             ))}
           </Grid>

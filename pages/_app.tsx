@@ -1,3 +1,8 @@
+import React from 'react';
+import { Provider as ReduxProvider } from 'react-redux';
+import { createStore } from 'redux';
+import ReactDOM from 'react-dom';
+
 import { AppProps } from 'next/app';
 import { FC } from 'react';
 import { useEffect } from 'react';
@@ -6,7 +11,11 @@ import { CssBaseline } from '@mui/material';
 import Head from 'next/head';
 import Layout from '../src/layout/Layout';
 import theme from '../lib/theme';
-import { Provider } from 'next-auth/client';
+import { Provider as AuthProvider } from 'next-auth/client';
+
+import rootReducer from '../src/redux/reducer';
+
+const store = createStore(rootReducer);
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   useEffect(() => {
@@ -36,14 +45,16 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }: AppProps) => {
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
       </Head>
-      <ThemeProvider theme={theme}>
-        <Provider session={pageProps.session}>
-          <CssBaseline />
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </Provider>
-      </ThemeProvider>
+      <ReduxProvider store={store}>
+        <ThemeProvider theme={theme}>
+          <AuthProvider session={pageProps.session}>
+            <CssBaseline />
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </AuthProvider>
+        </ThemeProvider>
+      </ReduxProvider>
     </>
   );
 };
