@@ -4,17 +4,15 @@ import Grid from '@mui/material/Grid';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { removeItem } from '../redux/actions/index';
+import { useSelector, useDispatch } from 'react-redux';
 
 const paperStyles = { padding: '10px 10px', width: '100%' };
 const imgCardStyles = { width: '70%', height: '60px' };
 const hoverStyles = { cursor: 'pointer' };
 
-export default function ItemBag() {
-  //itemImage, price, itemName, quantity
-
-  let itemImage = 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e';
-  let price = 111;
-  let itemName = 'hat';
+export default function ItemBag(props) {
+  const dispatch = useDispatch();
 
   const [count, setCount] = React.useState(1);
 
@@ -37,14 +35,14 @@ export default function ItemBag() {
           xs={12}
         >
           <Grid>
-            <img style={imgCardStyles} src={`${itemImage}`} alt="" />
+            <img style={imgCardStyles} src={`${props.data.image}`} alt="" />
           </Grid>
-          <Grid>{itemName}</Grid>
+          <Grid>{`${props.data.title}`}</Grid>
           <Grid>
             <RemoveIcon
               style={hoverStyles}
               onClick={() => {
-                setCount(Math.max(count - 1, 0));
+                setCount(Math.max(count - 1, 1));
               }}
             />
           </Grid>
@@ -60,9 +58,12 @@ export default function ItemBag() {
           <Grid>
             <span>Price:</span>
           </Grid>
-          <Grid>{`${price.toFixed(2)} €`}</Grid>
+          <Grid>{`${props.data.price.toFixed(2)} €`}</Grid>
           <Grid>
-            <DeleteIcon style={hoverStyles} />
+            <DeleteIcon
+              style={hoverStyles}
+              onClick={() => dispatch(removeItem(props.data))}
+            />
           </Grid>
         </Grid>
       </Paper>

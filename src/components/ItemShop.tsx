@@ -1,10 +1,11 @@
 import * as React from 'react';
-
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem } from '../redux/actions/index';
 
 const paperStyles = {
   padding: '10px 10px',
@@ -14,6 +15,15 @@ const paperStyles = {
 const imgCardStyles = { width: '70%', height: '150px' };
 
 export default function ItemShop(props) {
+  const dispatch = useDispatch();
+  const [count, setCount] = React.useState(1);
+
+  let quantity = 1;
+  const handleChange = (e) => {
+    e.target.value;
+    console.log(e.target.value, 'target', props.data.id);
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
@@ -27,7 +37,7 @@ export default function ItemShop(props) {
               item
               xs={12}
             >
-              <span>{`${props.data.category}`}</span>
+              <span>{`${props.data.category.toUpperCase()}`}</span>
               <h4>{`${props.data.title}`}</h4>
             </Grid>
             <Grid
@@ -60,10 +70,7 @@ export default function ItemShop(props) {
               item
               xs={12}
             >
-              <span>Quantity:</span>
-              {`${
-                props.data.quantity > 0 ? props.data.quantity : 'Out fo stock'
-              }`}
+              {`${props.data.quantity > 0 ? 'In stock' : 'Out fo stock'}`}
             </Grid>
 
             <Grid
@@ -83,13 +90,15 @@ export default function ItemShop(props) {
                 <TextField
                   hiddenLabel
                   id="quantity"
-                  defaultValue="0"
+                  disabled={Boolean(!props.data.quantity)}
+                  defaultValue="1"
                   variant="standard"
                   type="number"
                   inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                   size="small"
                 />
               </Grid>
+
               <Grid
                 container
                 direction="row"
@@ -98,7 +107,15 @@ export default function ItemShop(props) {
                 item
                 xs={2}
               >
-                <Button variant="contained">buy</Button>
+                <Button
+                  disabled={Boolean(!props.data.quantity)}
+                  variant="contained"
+                  onClick={() => {
+                    dispatch(addItem(props.data));
+                  }}
+                >
+                  buy
+                </Button>
               </Grid>
             </Grid>
           </Paper>

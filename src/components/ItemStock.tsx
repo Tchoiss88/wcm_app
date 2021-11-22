@@ -5,10 +5,10 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 
-const paperStyles = { padding: '10px 10px', width: '100%' };
+const paperStyles = { padding: '10px 10px', width: '100%', height: '500px' };
 const imgCardStyles = { width: '100%', height: '200px' };
 
-export default function ItemStock() {
+export default function ItemStock(props) {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
@@ -22,58 +22,71 @@ export default function ItemStock() {
               item
               xs={12}
             >
-              <h2>Item Name</h2>
-              <span>Category</span>
+              <span>{`${props.data.category.toUpperCase()}`}</span>
+              <h4>{`${props.data.title}`}</h4>
             </Grid>
+            <Grid>
+              <Grid
+                container
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+                item
+                xs={12}
+              >
+                <img style={imgCardStyles} src={`${props.data.image}`} alt="" />
+              </Grid>
 
-            <img
-              style={imgCardStyles}
-              src="https://images.unsplash.com/photo-1551963831-b3b1ca40c98e"
-              alt=""
-            />
-            <Grid
-              container
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-              item
-              xs={12}
-            >
-              <span>Price:</span>
-              <span>14.00€</span>
-            </Grid>
+              <Grid
+                container
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+                item
+                xs={12}
+              >
+                <span>Price:</span>
+                <span>{`${props.data.price.toFixed(2)} €`}</span>
+              </Grid>
 
-            <Grid
-              container
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-              item
-              xs={12}
-            >
-              <span>Quantity:</span>
-              <span>50 uds</span>
-            </Grid>
-            <Grid
-              container
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-              item
-              xs={12}
-            >
-              <span>Id:</span>
-              <span>ds554sf4s545sa978e7f</span>
-            </Grid>
-            <Grid
-              container
-              direction="row"
-              justifyContent="space-around"
-              alignItems="center"
-              xs={12}
-            >
-              <Button variant="contained">Add</Button>
-              <Button variant="contained">Remove</Button>
+              <Grid
+                container
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+                item
+                xs={12}
+              >
+                <span>Quantity:</span>
+                <span>
+                  {`${
+                    props.data.quantity > 0
+                      ? props.data.quantity
+                      : 'Out fo stock'
+                  }`}
+                </span>
+              </Grid>
+              <Grid
+                container
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+                item
+                xs={12}
+              >
+                <span>Id:</span>
+                <span>{`${props.data.id}`}</span>
+              </Grid>
+              <Grid
+                container
+                direction="row"
+                justifyContent="space-around"
+                alignItems="center"
+                xs={12}
+              >
+                <Button variant="contained">Add</Button>
+                <Button variant="contained">Remove</Button>
+              </Grid>
             </Grid>
           </Paper>
         </Grid>

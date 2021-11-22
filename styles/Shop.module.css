@@ -1,3 +1,11 @@
 .page {
   padding-top: 60px;
 }
+
+.showButton {
+  display: none;
+}
+
+.hideButton {
+  display: block;
+}

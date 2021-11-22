@@ -1,35 +1,32 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React from 'react';
 import styles from '../styles/Home.module.css';
 import { Container, Grid, Box } from '@mui/material';
 import useSWR from 'swr';
 import { useSession } from 'next-auth/client';
 import api from 'utils/api';
+import useStore from '../lib/store';
 
 import ItemHome from 'src/components/ItemHome';
 
 export default function Home() {
   const [session, loading] = useSession();
-  const [dataDB, setDataDB] = useState([]);
 
   const { data, error } = useSWR(
     `/api/user/${session ? session.user.email : ''}`,
     api
   );
 
-  useEffect(() => {
-    getAPI();
-  }, []);
-
-  const getAPI = async () => {
-    // const apiData = await fetch(``);
-    const allProduct = await require('../utils/data.json');
-    setDataDB(allProduct);
-  };
+  const stock = useStore((state) => state.stock);
 
   const key = 'category';
   const categories = [
-    ...new Map(dataDB.map((item) => [item[key], item])).values(),
+    ...new Map(stock.map((item) => [item[key], item])).values(),
   ];
+
+  const handleChange = (e) => {
+    e.target.value;
+    console.log(e.target.value, 'target');
+  };
 
   return (
     <Container className={styles.page}>
@@ -43,13 +40,13 @@ export default function Home() {
         item
         xs={12}
       >
-        <h1>
+        <h2>
           {` ${
             session
               ? `Welcome ${session.user.email} to WCM.`
               : 'Join us and get first order discount.'
           }`}
-        </h1>
+        </h2>
       </Grid>
       <Grid></Grid>
       <Grid container item xs={12}>
@@ -60,7 +57,7 @@ export default function Home() {
             columns={{ xs: 4, sm: 4, md: 12 }}
           >
             {categories.map((item, i) => (
-              <Grid item md={6} key={i}>
+              <Grid item md={6} key={item.id}>
                 <ItemHome data={item} />
               </Grid>
             ))}

@@ -4,6 +4,7 @@ const rootReducer = (state = [], action) => {
       return [...state, action.payload];
     case 'REMOVE_ITEM_BAG':
       return state.filter((curr) => curr !== action.payload);
+
     default:
       return state;
   }

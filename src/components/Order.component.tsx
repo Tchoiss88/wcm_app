@@ -1,10 +1,9 @@
-'use strict';
 import * as React from 'react';
-
 import { Box, Container, Grid, Button, Paper } from '@mui/material';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
+import useStore from '../../lib/store';
 
 const steps = [
   'Payment In Process',
@@ -14,7 +13,20 @@ const steps = [
   'Delivered',
 ];
 
+interface Order {
+  _id: string;
+  email: string;
+  fullName: string;
+  createDate: Date;
+  deliveryDate: Date;
+  orderState: number;
+  orderItem: [];
+  orderSummary: {};
+}
+
 const paperStyles = { padding: '30px 20px', width: 1000, margin: '20px auto' };
+
+const createOrder = (arr, order: Order) => {};
 
 function OrderComponent(props) {
   return (
@@ -39,8 +51,8 @@ function OrderComponent(props) {
             item
             xs={4}
           >
-            <h2>Order ID:</h2>
-            <h2>0025gd151dsg1sdg515</h2>
+            <h3>Order ID:</h3>
+            <h3>0025gd151dsg1sdg515</h3>
           </Grid>
           <Grid item xs={12}>
             <Box sx={{ width: '100%' }}>
@@ -61,9 +73,10 @@ function OrderComponent(props) {
             item
             xs={12}
           >
-            <h2>User Full Name:</h2>
-            <h2>User Email:</h2>
+            <h3>User Full Name:</h3>
+            <h3>User Email:</h3>
           </Grid>
+
           <Grid
             container
             direction="row"
@@ -82,6 +95,7 @@ function OrderComponent(props) {
             alignItems="center"
           >
             <Button variant="contained">Cancel order</Button>
+            <Button variant="contained">Order Detail</Button>
           </Grid>
         </Paper>
       </Container>

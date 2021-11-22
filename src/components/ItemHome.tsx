@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useRouter } from 'next/router';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
@@ -7,6 +8,14 @@ const paperStyles = { cursor: 'pointer', padding: '0 10px', width: '90%' };
 const imgCardStyles = { width: '100%', height: '280px' };
 
 const ItemHome = (props) => {
+  const router = useRouter();
+
+  const handleChange = (e) => {
+    e.target.value;
+    console.log(e.target.value, 'target', props.data.category);
+    router.push('/shop');
+  };
+
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -17,7 +26,7 @@ const ItemHome = (props) => {
             justifyContent="center"
             alignItems="center"
           >
-            <Paper elevation={10} style={paperStyles}>
+            <Paper elevation={10} style={paperStyles} onClick={handleChange}>
               <Grid
                 container
                 direction="row"
@@ -26,12 +35,12 @@ const ItemHome = (props) => {
                 item
                 xs={12}
               >
-                <h2>{`${props.data.category}`}</h2>
+                <h2>{`${props.data?.category.toUpperCase()}`}</h2>
               </Grid>
 
               <img
                 style={imgCardStyles}
-                src={`${props.data.image}`}
+                src={`${props.data?.image}`}
                 alt="category image"
               />
             </Paper>

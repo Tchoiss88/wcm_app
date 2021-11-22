@@ -1,25 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
+import { signIn, useSession } from 'next-auth/client';
 import { Container, Grid, Box, Paper, Button } from '@mui/material';
+
 import ItemBag from 'src/components/ItemBag';
+
 import styles from 'styles/ShopBag.module.css';
 
 export default function ShopBag() {
-  let item = 99;
-  const delivery = item < 100 ? 5 : 0;
-  const total = item + delivery;
+  const router = useRouter();
+  const [session, loading] = useSession();
 
-  const dispatch = useDispatch();
-
-  // const itemToBy = useSelector((state) => state);
-
-  // console.log(itemToBy, 'itemBag');
+  const itemToBuy = useSelector((state) => state);
+  const itemsTotalPrice = calculatedItemsTotalPrice();
+  const delivery = calculatedDelivery();
+  const total = calculatedTotal();
 
   const paperStyles = {
     padding: '10px 10px',
     width: '280px',
     position: 'fixed',
   };
+
+  function calculatedItemsTotalPrice() {
+    let som = 0;
+    itemToBuy.map((item, i) => {
+      som = som + item.price;
+    });
+    return som;
+  }
+
+  function calculatedDelivery() {
+    if (itemsTotalPrice === 0) {
+      return `${(0).toFixed(2)} €`;
+    }
+    if (itemsTotalPrice > 0 && itemsTotalPrice < 100) {
+      return `${(5).toFixed(2)} €`;
+    } else {
+      return 'Free';
+    }
+  }
+
+  function calculatedTotal() {
+    if (delivery === 'Free' || delivery === `${(0).toFixed(2)} €`) {
+      return itemsTotalPrice;
+    } else if (delivery === `${(5).toFixed(2)} €`) {
+      return itemsTotalPrice + 5;
+    }
+  }
+
+  function handleClickCheckout() {
+    if (!session) {
+      signIn('auth0');
+    }
+    console.log(session);
+  }
 
   return (
     <Container className={styles.page}>
@@ -49,9 +85,9 @@ export default function ShopBag() {
               spacing={{ xs: 2, md: 3 }}
               columns={{ xs: 4, sm: 8, md: 1 }}
             >
-              {Array.from(Array(4)).map((_, index) => (
+              {Array.from(itemToBuy).map((itemBag, index) => (
                 <Grid item xs={2} sm={3} md={3} key={index}>
-                  <ItemBag />
+                  <ItemBag data={itemBag} />
                 </Grid>
               ))}
             </Grid>
@@ -88,7 +124,9 @@ export default function ShopBag() {
                 xs={12}
               >
                 <h3>{`Item(s):`}</h3>
-                <h3>{`${item.toFixed(2)} €`}</h3>
+                <h3>{`${(itemsTotalPrice ? itemsTotalPrice : 0).toFixed(
+                  2
+                )} €`}</h3>
               </Grid>
               <Grid
                 container
@@ -99,7 +137,7 @@ export default function ShopBag() {
                 xs={12}
               >
                 <h3>{`Est. Delivery:`}</h3>
-                <h3>{`${delivery ? `${delivery.toFixed(2)} €` : 'Free'}`}</h3>
+                <h3>{delivery}</h3>
               </Grid>
               <Grid
                 container
@@ -120,7 +158,9 @@ export default function ShopBag() {
                 item
                 xs={12}
               >
-                <Button variant="contained">checkout</Button>
+                <Button variant="contained" onClick={handleClickCheckout}>
+                  checkout
+                </Button>
               </Grid>
             </Grid>
           </Paper>
