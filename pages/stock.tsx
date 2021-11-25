@@ -5,6 +5,7 @@ import useStore from '../lib/store';
 
 export default function Stock() {
   const stock = useStore((state) => state.stock);
+
   return (
     <Container>
       <Grid container>

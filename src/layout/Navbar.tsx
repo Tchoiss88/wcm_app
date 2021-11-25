@@ -3,13 +3,13 @@ import { useRouter } from 'next/router';
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import styles from 'styles/Navbar.module.css';
-import { signIn, signOut, useSession } from 'next-auth/client';
-import useSWR from 'swr';
-
 import { Container, Box } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
+
+import { signIn, signOut, useSession } from 'next-auth/client';
+import useSWR from 'swr';
 import api from 'utils/api';
 
 let useClickOutside = (handler) => {

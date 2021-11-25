@@ -21,7 +21,9 @@ const Order: NextPage = () => {
         justifyContent="center"
         alignItems="center"
       >
-        <h2>{`${orders === [] ? 'You do not have any orders ' : 'Orders'}`}</h2>
+        <h2>{`${
+          orders.length <= 0 ? 'You do not have any orders ' : 'Orders'
+        }`}</h2>
       </Grid>
 
       <Box sx={{ flexGrow: 1 }}>

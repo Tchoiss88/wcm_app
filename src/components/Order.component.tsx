@@ -3,6 +3,10 @@ import { Box, Container, Grid, Button, Paper } from '@mui/material';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
+import styles from 'styles/Navbar.module.css';
+import { useSession } from 'next-auth/client';
+import useSWR from 'swr';
+import api from 'utils/api';
 
 const steps = [
   'Payment In Process',
@@ -26,6 +30,14 @@ interface Order {
 const paperStyles = { padding: '30px 20px', width: 1000, margin: '20px auto' };
 
 function OrderComponent(props) {
+  const [session] = useSession();
+
+  const { data } = useSWR(`/api/user/${session?.user.email}`, api);
+  const user = data?.data.userType;
+
+  let createDate = createDateConvert(props.data.createDate);
+  let deliveryDate = deliveryDateConvert(props.data.deliveryEstimatedDate);
+
   function createDateConvert(timestamp) {
     let dateObj = new Date(timestamp);
     let month = dateObj.getMonth() + 1;
@@ -44,23 +56,35 @@ function OrderComponent(props) {
     return `${date}/${month}/${year}`;
   }
 
-  let createDate = createDateConvert(props.data.createDate);
-  let deliveryDate = deliveryDateConvert(props.data.deliveryEstimatedDate);
+  let deliveryCost = () => {
+    if (props.data.orderSummary.deliveryCost !== 'Free') {
+      return `${props.data.orderSummary.deliveryCost.toFixed(2)} €`;
+    } else {
+      return 'Free';
+    }
+  };
 
   return (
     <>
       <Container>
         <Paper elevation={10} style={paperStyles}>
-          {/* This two button only the worker can see */}
-          {/* <Grid
-            container
-            direction="row"
-            justifyContent="space-around"
-            alignItems="center"
+          <div
+            className={
+              user === 'worker'
+                ? styles.workerMenuShow
+                : styles.workerMenuNotShow
+            }
           >
-            <Button variant="contained">Accept Cancellation</Button>
-            <Button variant="contained">Next State</Button>
-          </Grid> */}
+            <Grid
+              container
+              direction="row"
+              justifyContent="space-around"
+              alignItems="center"
+            >
+              <Button variant="contained">Accept Cancellation</Button>
+              <Button variant="contained">Next State</Button>
+            </Grid>
+          </div>
           <Grid
             container
             direction="row"
@@ -121,11 +145,7 @@ function OrderComponent(props) {
             <span>{`Items price: ${props.data.orderSummary.itemsPrice.toFixed(
               2
             )} €`}</span>
-            <span>{`Delivery cost: ${
-              props.data.orderSummary.deliveryCost === 'Free'
-                ? 'Free'
-                : props.data.orderSummary.deliveryCost.toFixed(2)
-            }`}</span>
+            <span>{`Delivery cost: ${deliveryCost()}`}</span>
             <span>{`Total price: ${props.data.orderSummary.total.toFixed(
               2
             )} €`}</span>
