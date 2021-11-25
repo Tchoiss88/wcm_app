@@ -7,26 +7,17 @@ interface ErrorResponseType {
 
 interface SuccessResponseType {
   _id: string;
-  first_name: string;
-  last_name: string;
+  fullName: string;
   email: string;
-  cellphone?: number;
-  worker: Boolean;
-  address?: string;
-  orders: Record<string, string[]>;
-  work_hours: Record<string, string[]>;
-}
-
-interface User {
-  _id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  cellphone?: number;
-  worker: Boolean;
-  address?: string;
-  orders: Record<string, string[]>;
-  work_hours: Record<string, string[]>;
+  address: string;
+  image?: string;
+  gender: string;
+  userType: string;
+  birthDate: number;
+  cellphone: number;
+  workHoursWeekly?: number;
+  showContact: Boolean;
+  orders?: [];
 }
 
 export default async (
@@ -34,69 +25,109 @@ export default async (
   res: NextApiResponse<ErrorResponseType | SuccessResponseType>
 ): Promise<void> => {
   if (req.method === 'POST') {
-    const {
-      first_name,
-      last_name,
-      email,
-      cellphone,
-      worker,
-      address,
-      orders,
-      work_hours,
-    }: {
-      first_name: string;
-      last_name: string;
-      email: string;
-      cellphone?: number;
-      worker: Boolean;
-      address?: string;
-      orders: Record<string, string[]>;
-      work_hours: Record<string, string[]>;
-    } = req.body;
+    try {
+      const {
+        fullName,
+        email,
+        address,
+        image,
+        gender,
+        userType,
+        birthDate,
+        cellphone,
+        workHoursWeekly,
+        showContact,
+        orders,
+      }: {
+        fullName: string;
+        email: string;
+        address: string;
+        image?: string;
+        gender: string;
+        userType: string;
+        birthDate: number;
+        cellphone: number;
+        workHoursWeekly?: number;
+        showContact: Boolean;
+        orders?: [];
+      } = req.body;
 
-    if (!worker) {
-      if (
-        !first_name ||
-        !last_name ||
-        !email ||
-        !cellphone ||
-        !address ||
-        !orders
-      ) {
-        res.status(400).json({ error: ` Missing body parameter!` });
-        return;
+      if (userType === 'client') {
+        if (
+          !fullName ||
+          !email ||
+          !address ||
+          !gender ||
+          !birthDate ||
+          !cellphone ||
+          !workHoursWeekly ||
+          !showContact
+        ) {
+          res
+            .status(400)
+            .json({ error: ` Missing body parameter on worker account!` });
+          return;
+        }
+        const { db } = await connect();
+
+        const response = await db.collection('users').insertOne({
+          fullName,
+          email,
+          address,
+          image: image || '',
+          gender,
+          userType,
+          birthDate,
+          cellphone,
+          workHoursWeekly: workHoursWeekly || null,
+          showContact,
+          orders: orders || [],
+        });
+
+        res.status(200).json(response.ops[0]);
+        res.end();
       }
-    } else if (worker) {
-      if (
-        !first_name ||
-        !last_name ||
-        !email ||
-        !cellphone ||
-        !address ||
-        !work_hours
-      ) {
-        res.status(400).json({ error: ` Missing body parameter!` });
-        return;
+      if (userType === 'worker') {
+        if (
+          !fullName ||
+          !email ||
+          !address ||
+          !gender ||
+          !birthDate ||
+          !cellphone ||
+          !workHoursWeekly ||
+          !showContact
+        ) {
+          res
+            .status(400)
+            .json({ error: ` Missing body parameter on worker account!` });
+          return;
+        }
+
+        const { db } = await connect();
+
+        const response = await db.collection('users').insertOne({
+          fullName,
+          email,
+          address,
+          image: image || '',
+          gender,
+          userType,
+          birthDate,
+          cellphone,
+          workHoursWeekly: workHoursWeekly || null,
+          showContact,
+          orders: orders || [],
+        });
+
+        res.status(200).json(response.ops[0]);
+        res.end();
       }
+    } catch (error) {
+      res.status(error).json({ error: ` error in the catch!` });
     }
-
-    const { db } = await connect();
-
-    const response = await db.collection('users').insertOne({
-      first_name,
-      last_name,
-      email,
-      cellphone,
-      worker,
-      address,
-      orders: orders || [],
-      work_hours: work_hours || [],
-    });
-
-    res.status(200).json(response.ops[0]);
-    return;
   } else {
-    res.status(400).json({ error: ` Wrong request method!` });
-    return;
+    res.status(405).json({ error: ` Wrong request method!` });
+    res.end();
   }
 };

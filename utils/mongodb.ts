@@ -1,10 +1,11 @@
-import { Db, MongoClient } from 'mongodb';
+import { Collection, MongoClient } from 'mongodb';
 
 interface ConnectType {
-  db: Db;
+  db: Collection;
   client: MongoClient;
 }
 
+// connection URI database Name
 const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DB;
 const options = {
@@ -19,8 +20,11 @@ if (!process.env.MONGODB_URI) {
 const client = new MongoClient(uri, options);
 
 export default async function connect(): Promise<ConnectType> {
+  // verify if there is a connection if no establish and verify connection
   if (!client.isConnected()) await client.connect();
 
   const db = client.db(dbName);
+
   return { db, client };
 }
+//

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
+import useSWR from 'swr';
+import api from 'utils/api';
 import { signIn, useSession } from 'next-auth/client';
 import { Container, Grid, Box, Paper, Button } from '@mui/material';
 
@@ -9,8 +10,12 @@ import ItemBag from 'src/components/ItemBag';
 import styles from 'styles/ShopBag.module.css';
 
 export default function ShopBag() {
-  const router = useRouter();
-  const [session, loading] = useSession();
+  const [session] = useSession();
+
+  const { data, error } = useSWR(
+    `/api/user/${session ? session.user.email : ''}`,
+    api
+  );
 
   const itemToBuy = useSelector((state) => state);
   const itemsTotalPrice = calculatedItemsTotalPrice();
@@ -51,10 +56,35 @@ export default function ShopBag() {
   }
 
   function handleClickCheckout() {
+    let order;
     if (!session) {
       signIn('auth0');
+      return;
+    } else {
+      order = {
+        id: `${data.data.fullName.slice(0, 3)}${data.data.fullName.slice(
+          -4,
+          -1
+        )}${Date.now()}`,
+        email: data.data.email,
+        fullName: `${data.data.fullName} `,
+        createDate: Date.now(),
+        deliveryDate: Date.now(),
+        orderState: 0,
+        orderItems: Array.from(itemToBuy),
+        orderSummary: {
+          itemsPrice: itemsTotalPrice,
+          delivery: delivery,
+          total: total,
+        },
+      };
+
+      if (order.orderSummary.total > 0) {
+        data.data.orders.push(order);
+      }
+
+      console.log(data.data, 'data', 'order', order);
     }
-    console.log(session);
   }
 
   return (

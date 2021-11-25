@@ -13,28 +13,15 @@ interface MessageSuccessType {
 
 interface SuccessResponseType {
   _id: string;
-  email_create: string;
-  email_modified: Record<string, string[]>;
-  date_created: Date;
-  items: Record<string, unknown[]>;
-  ship_address: string;
-  owner_name: string;
-  owner_cellphone: number;
-  owner_email: string;
-  status: number;
-}
-
-interface Order {
-  _id: string;
-  email_create: string;
-  email_modified: Record<string, string[]>;
-  date_created: Date;
-  items: Record<string, unknown[]>;
-  ship_address: string;
-  owner_name: string;
-  owner_cellphone: number;
-  owner_email: string;
-  status: number;
+  fullName: string;
+  email: string;
+  address: string;
+  cellphone: number;
+  createDate: number;
+  deliveryEstimatedDate: number;
+  orderState: number;
+  orderItems: [];
+  orderSummary: {};
 }
 
 export default async (
@@ -46,42 +33,43 @@ export default async (
   if (req.method === 'POST') {
     const session = await getSession({ req });
 
-    if (!session) {
-      res.status(400).json({ error: ` Please login first!` });
-      return;
-    }
+    // FIXME
+    // if (!session) {
+    //   res.status(400).json({ error: ` Please login first!` });
+    //   return;
+    // }
 
     const {
-      email_create,
-      email_modified,
-      date_created,
-      items,
-      ship_address,
-      owner_name,
-      owner_cellphone,
-      owner_email,
-      status,
+      fullName,
+      email,
+      address,
+      cellphone,
+      createDate,
+      deliveryEstimatedDate,
+      orderState,
+      orderItems,
+      orderSummary,
     }: {
-      email_create: string;
-      email_modified: Record<string, string[]>;
-      date_created: Date;
-      items: Record<string, unknown[]>;
-      ship_address: string;
-      owner_name: string;
-      owner_cellphone: number;
-      owner_email: string;
-      status: number;
+      fullName: string;
+      email: string;
+      address: string;
+      cellphone: number;
+      createDate: number;
+      deliveryEstimatedDate: number;
+      orderState: number;
+      orderItems: [];
+      orderSummary: {};
     } = req.body;
 
     if (
-      !email_create ||
-      !date_created ||
-      !items ||
-      !ship_address ||
-      !owner_name ||
-      !owner_cellphone ||
-      !owner_email ||
-      !status
+      !fullName ||
+      !email ||
+      !address ||
+      !cellphone ||
+      !createDate ||
+      !deliveryEstimatedDate ||
+      !orderItems ||
+      !orderSummary
     ) {
       res.status(400).json({ error: ` Missing body parameter!` });
       return;
@@ -90,21 +78,21 @@ export default async (
     const { db } = await connect();
 
     const order = {
-      email_create,
-      emailModified: email_modified || [],
-      date_created,
-      items,
-      ship_address,
-      owner_name,
-      owner_cellphone,
-      owner_email,
-      status: 1,
+      fullName,
+      email,
+      address,
+      cellphone,
+      createDate,
+      deliveryEstimatedDate,
+      orderState: 0,
+      orderItems,
+      orderSummary,
     };
 
     await db.collection('orders').insertOne(order);
     await db
       .collection('users')
-      .updateOne({ email: owner_email }, { $push: { orders: order } });
+      .updateOne({ email: email }, { $push: { orders: order } });
 
     res.status(200).json({ message: `Order create successfully` });
     //

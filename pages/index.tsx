@@ -1,32 +1,34 @@
 import React from 'react';
 import styles from '../styles/Home.module.css';
 import { Container, Grid, Box } from '@mui/material';
-import useSWR from 'swr';
 import { useSession } from 'next-auth/client';
-import api from 'utils/api';
 import useStore from '../lib/store';
-
 import ItemHome from 'src/components/ItemHome';
+import useSWR from 'swr';
+import api from 'utils/api';
 
 export default function Home() {
-  const [session, loading] = useSession();
+  const [session] = useSession();
 
-  const { data, error } = useSWR(
-    `/api/user/${session ? session.user.email : ''}`,
-    api
-  );
+  const { data } = useSWR(`/api/user/${session?.user.email}`, api);
+
+  function getUserName() {
+    let arrayName = data?.data.fullName.split(' ');
+    let firstName = arrayName[0];
+    let lastName = arrayName[arrayName.length - 1];
+
+    return `${firstName} ${lastName}`;
+  }
+
+  let userName = data?.data.fullName ? getUserName() : '';
 
   const stock = useStore((state) => state.stock);
 
   const key = 'category';
+  //FIXME
   const categories = [
     ...new Map(stock.map((item) => [item[key], item])).values(),
   ];
-
-  const handleChange = (e) => {
-    e.target.value;
-    console.log(e.target.value, 'target');
-  };
 
   return (
     <Container className={styles.page}>
@@ -43,13 +45,12 @@ export default function Home() {
         <h2>
           {` ${
             session
-              ? `Welcome ${session.user.email} to WCM.`
+              ? `Welcome ${userName} to WCM.`
               : 'Join us and get first order discount.'
           }`}
         </h2>
       </Grid>
-      <Grid></Grid>
-      <Grid container item xs={12}>
+      <Grid>
         <Box sx={{ flexGrow: 1 }}>
           <Grid
             container

@@ -1,30 +1,18 @@
 import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { createStore } from 'redux';
-import ReactDOM from 'react-dom';
-
 import { AppProps } from 'next/app';
-import { FC } from 'react';
-import { useEffect } from 'react';
 import { ThemeProvider } from '@mui/material';
 import { CssBaseline } from '@mui/material';
 import Head from 'next/head';
 import Layout from '../src/layout/Layout';
 import theme from '../lib/theme';
 import { Provider as AuthProvider } from 'next-auth/client';
-
 import rootReducer from '../src/redux/reducer';
 
 const store = createStore(rootReducer);
 
-const MyApp: FC<AppProps> = ({ Component, pageProps }: AppProps) => {
-  useEffect(() => {
-    // Remove the server-side injected css
-    const jssStyles = document.querySelector('#jss-server-side-styles');
-    if (jssStyles && jssStyles.parentNode) {
-      jssStyles.parentNode.removeChild(jssStyles);
-    }
-  }, []);
+function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
     <>
       <Head>
@@ -57,5 +45,5 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }: AppProps) => {
       </ReduxProvider>
     </>
   );
-};
+}
 export default MyApp;

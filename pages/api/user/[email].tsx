@@ -7,54 +7,61 @@ interface ErrorResponseType {
 
 interface SuccessResponseType {
   _id: string;
-  first_name: string;
-  last_name: string;
+  fullName: string;
   email: string;
-  cellphone?: number;
-  worker: Boolean;
-  address?: string;
-  orders: Record<string, string[]>;
-  work_hours: Record<string, string[]>;
-}
-
-interface User {
-  _id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  cellphone?: number;
-  worker: Boolean;
-  address?: string;
-  orders: Record<string, string[]>;
-  work_hours: Record<string, string[]>;
+  address: string;
+  image: string;
+  gender: string;
+  userType: string;
+  birthDate: number;
+  cellphone: number;
+  workHoursWeekly: number;
+  showContact: Boolean;
+  orders: [];
 }
 
 export default async (
   req: NextApiRequest,
   res: NextApiResponse<ErrorResponseType | SuccessResponseType>
 ): Promise<void> => {
-  if (req.method === 'GET') {
-    const { db } = await connect();
+  console.log(req.method, 'req method');
 
-    const { email } = req.query;
+  if (req.method === 'GET') {
+    const { email } = req?.query;
+
+    console.log(email, 'here ');
+
+    if (email === undefined) {
+    }
+
+    console.log(email, 'I pass again ');
 
     if (!email) {
       res.status(400).json({ error: ` Missing email on request body` });
-      return;
     }
+    console.log(email, 'I pass again 1');
+
+    const { db } = await connect();
+
+    console.log(email, 'I pass again 2');
 
     const response = await db.collection('users').findOne({
       email,
     });
 
+    console.log(email, 'I pass again 3');
+
     if (!response) {
-      res.status(400).json({ error: `Email not found` });
+      res.status(400).json({ error: `User with e-mail ${email} not found` });
       return;
     }
-    console.log(response, 'resp');
+
+    console.log(email, 'I pass again 4');
+
     res.status(200).json(response);
+    res.end();
   } else {
-    res.status(400).json({ error: ` Wrong request method!` });
-    return;
+    res.status(405).json({ error: ` Wrong request method! els` });
+    res.end();
   }
 };

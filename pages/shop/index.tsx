@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Container, Grid, Box } from '@mui/material';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -10,16 +10,6 @@ import useStore from '../../lib/store';
 export default function Shop() {
   const stock = useStore((state) => state.stock);
   const [radioCategory, setRadioCategory] = useState('all');
-  const [filterStock, setFilterStock] = useState(stock);
-
-  // to put react to update immediate
-  useEffect(() => {
-    if (radioCategory !== 'all') {
-      filterStockWithRadioButton();
-    } else {
-      setFilterStock(stock);
-    }
-  }, [radioCategory]);
 
   // create an array of all the categories to render on the home page and will filter the stock
   const categories = [
@@ -28,16 +18,6 @@ export default function Shop() {
     ),
   ];
 
-  // function to filter by category choose by the user
-  function filterStockWithRadioButton() {
-    if (radioCategory !== 'all') {
-      console.log(stock);
-      const itemsByCategory = stock.filter((item) => {
-        return item.category === radioCategory;
-      });
-      setFilterStock(itemsByCategory);
-    }
-  }
   return (
     <Container>
       <Grid container>
@@ -106,11 +86,17 @@ export default function Shop() {
             spacing={{ xs: 5, md: 5 }}
             columns={{ xs: 8, sm: 4, md: 10 }}
           >
-            {filterStock.map((item, i) => (
-              <Grid item xs={2} sm={4} md={3} key={i}>
-                <ItemShop data={item} />
-              </Grid>
-            ))}
+            {stock
+              .filter((item) => {
+                return (
+                  item.category === radioCategory || radioCategory === 'all'
+                );
+              })
+              .map((item, i) => (
+                <Grid item xs={2} sm={4} md={3} key={i}>
+                  <ItemShop data={item} />
+                </Grid>
+              ))}
           </Grid>
         </Box>
       </Grid>

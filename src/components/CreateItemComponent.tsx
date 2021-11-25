@@ -49,11 +49,15 @@ const genders = [
     value: 'male',
     label: 'Male',
   },
+  {
+    value: 'uniSex',
+    label: 'Uni Sex',
+  },
 ];
 
 const sizes = [
   {
-    value: 'extra small',
+    value: 'extraSmall',
     label: 'XS = 32 - 36',
   },
   {
@@ -69,11 +73,11 @@ const sizes = [
     label: 'L = 44 - 48',
   },
   {
-    value: 'extra large',
+    value: 'extraLarge',
     label: 'XL = 48 - 52',
   },
   {
-    value: 'extra extra large',
+    value: 'extraExtraLarge',
     label: 'XXL = 52 - 56',
   },
 ];

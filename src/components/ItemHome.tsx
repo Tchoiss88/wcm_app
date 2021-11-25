@@ -12,7 +12,6 @@ const ItemHome = (props) => {
 
   const handleChange = (e) => {
     e.target.value;
-    console.log(e.target.value, 'target', props.data.category);
     router.push('/shop');
   };
 

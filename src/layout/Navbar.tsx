@@ -14,7 +14,7 @@ import api from 'utils/api';
 
 let useClickOutside = (handler) => {
   let domNode = useRef();
-
+  //FIXME
   useEffect(() => {
     let maybeHandler = (event) => {
       if (!domNode.current.contains(event.target)) {
@@ -38,7 +38,7 @@ const Navbar: NextPage = () => {
   const router = useRouter();
 
   const { data } = useSWR(`/api/user/${session?.user.email}`, api);
-  const user = data ? data.data.worker : false;
+  const user = data?.data.userType;
 
   let domNode = useClickOutside(() => {
     setMenu(false);
@@ -114,7 +114,11 @@ const Navbar: NextPage = () => {
             <Link href="/order">Order</Link> <br />
           </div>
           <div
-            className={user ? styles.workerMenuShow : styles.workerMenuNotShow}
+            className={
+              user === 'worker'
+                ? styles.workerMenuShow
+                : styles.workerMenuNotShow
+            }
           >
             <Link href="/createItem">Create Item</Link>
             <br />
