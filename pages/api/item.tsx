@@ -7,20 +7,20 @@ interface ErrorResponseType {
 }
 
 interface item {
+  _id: string;
+  title: string;
+  description: string;
   category: string;
-  name: string;
-  root_name: string;
-  genders: string;
+  image?: string;
+  gender: string;
   price: number;
   quantity: number;
-  url: string;
-  description: string;
-  size: string;
+  sizes: [];
 }
 
 export default async (
   req: NextApiRequest,
-  res: NextApiResponse<ErrorResponseType | object[]>
+  res: NextApiResponse<ErrorResponseType | item>
 ): Promise<void> => {
   if (req.method === 'POST') {
     const session = await getSession({ req });
@@ -32,36 +32,34 @@ export default async (
     // }
 
     const {
+      title,
+      description,
       category,
-      name,
-      root_name,
-      genders,
+      image,
+      gender,
       price,
       quantity,
-      url,
-      description,
-      size,
+      sizes,
     }: {
+      title: string;
+      description: string;
       category: string;
-      name: string;
-      root_name: string;
-      genders: string;
+      image: string;
+      gender: string;
       price: number;
       quantity: number;
-      url: string;
-      description: string;
-      size: string;
+      sizes: [];
     } = req.body;
 
     if (
+      !title ||
+      !description ||
       !category ||
-      !name ||
-      !root_name ||
-      !genders ||
+      !image ||
+      !gender ||
       !price ||
       !quantity ||
-      !description ||
-      !size
+      !sizes
     ) {
       res.status(400).json({ error: ` Missing body parameter!` });
       return;
@@ -70,15 +68,14 @@ export default async (
     const { db } = await connect();
 
     const response = await db.collection('items').insertOne({
+      title,
+      description,
       category,
-      name,
-      root_name,
-      genders,
+      image: image || '',
+      gender,
       price,
       quantity,
-      url: url || null,
-      description,
-      size,
+      sizes,
     });
 
     res.status(200).json(response.ops[0]);
@@ -86,27 +83,22 @@ export default async (
   } else if (req.method === 'GET') {
     const { db } = await connect();
 
-    const { name } = req.body;
+    const response = await db.getCollectionName('items');
+    console.log(response, 'hey im here response 001');
 
-    if (!name) {
-      res.status(400).json({ error: ` Missing name on request body` });
-      return;
-    }
-
-    const response = await db
-      .collection('items')
-      .find({
-        name: { $in: [new RegExp(`^${name}`, 'g')] },
-      })
-      .toArray();
-
-    if (response.length === 0) {
-      res.status(400).json({ error: `Name not found` });
+    if (!response) {
+      res.status(400).json({ error: `No items in the stock` });
+      res.end();
       return;
     }
 
     res.status(200).json(response);
+    res.end();
+    return;
+    //
   } else {
     res.status(400).json({ error: ` Wrong request method!` });
+    res.end();
+    return;
   }
 };

@@ -46,7 +46,6 @@ export default async (
       cellphone,
       createDate,
       deliveryEstimatedDate,
-      orderState,
       orderItems,
       orderSummary,
     }: {
@@ -56,7 +55,6 @@ export default async (
       cellphone: number;
       createDate: number;
       deliveryEstimatedDate: number;
-      orderState: number;
       orderItems: [];
       orderSummary: {};
     } = req.body;
@@ -103,6 +101,7 @@ export default async (
 
     if (!id) {
       res.status(400).json({ error: ` Missing Id on request body` });
+      res.end();
       return;
     }
 
@@ -112,12 +111,16 @@ export default async (
 
     if (!response) {
       res.status(400).json({ error: `The order with ID=${id} was not found` });
+      res.end();
       return;
     }
 
     res.status(200).json(response);
+    res.end();
+    //
   } else {
     res.status(400).json({ error: ` Wrong request method!` });
+    res.end();
     return;
   }
 };

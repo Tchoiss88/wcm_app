@@ -5,29 +5,16 @@ interface ErrorResponseType {
   error: string;
 }
 
-interface Item {
-  _id: string;
-  category: string;
-  name: string;
-  root_name: string;
-  genders: string;
-  price: number;
-  quantity: number;
-  url: string;
-  description: string;
-  size: string;
-}
-
 export default async (
   req: NextApiRequest,
-  res: NextApiResponse<ErrorResponseType | Item>
+  res: NextApiResponse<ErrorResponseType | Record<string, unknown>[]>
 ): Promise<void> => {
   if (req.method === 'GET') {
     const { db } = await connect();
 
-    const { name } = req.query;
+    const { title } = req.query;
 
-    if (!name) {
+    if (!title) {
       res.status(400).json({ error: ` Missing name on request body` });
       return;
     }
@@ -35,18 +22,19 @@ export default async (
     const response = await db
       .collection('items')
       .find({
-        name,
+        title: { $in: [new RegExp(`${title}`, 'i')] },
       })
       .toArray();
 
-    //: { $in: [new RegExp(`^${name}`, 'g')] }
-
     if (response.length === 0) {
       res.status(400).json({ error: `Name not found` });
+      console.log(title, 'inside of the length ');
+
       return;
     }
 
-    res.status(200);
+    res.status(200).json(response);
+    res.end();
   } else {
     res.status(400).json({ error: ` Wrong request method!` });
   }

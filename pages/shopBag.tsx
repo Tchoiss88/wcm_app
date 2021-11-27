@@ -1,10 +1,9 @@
-import React from 'react';
+import * as React from 'react';
 import { useSelector } from 'react-redux';
 import useSWR from 'swr';
 import api from 'utils/api';
 import { signIn, useSession } from 'next-auth/client';
 import { Container, Grid, Box, Paper, Button } from '@mui/material';
-
 import ItemBag from 'src/components/ItemBag';
 
 import styles from 'styles/ShopBag.module.css';
@@ -12,14 +11,24 @@ import styles from 'styles/ShopBag.module.css';
 export default function ShopBag() {
   const [session] = useSession();
 
-  const { data, error } = useSWR(
+  const { data } = useSWR(
     `/api/user/${session ? session.user.email : ''}`,
     api
   );
 
+  // FIXME save the array in the local store on a click
+  // let itemsInBag = useSelector((state) => state);
+
+  // window.localStorage.setItem('shopBagItems', itemsInBag);
+
+  // window.localStorage.getItem('shopBagItems');
+
   const itemToBuy = useSelector((state) => state);
+
   const itemsTotalPrice = calculatedItemsTotalPrice();
+
   const delivery = calculatedDelivery();
+
   const total = calculatedTotal();
 
   const paperStyles = {
@@ -98,7 +107,7 @@ export default function ShopBag() {
           item
           xs={12}
         >
-          <h1> My Shopping Bag</h1>
+          <h2> My Shopping Bag</h2>
         </Grid>
 
         <Grid
@@ -115,7 +124,8 @@ export default function ShopBag() {
               spacing={{ xs: 2, md: 3 }}
               columns={{ xs: 4, sm: 8, md: 1 }}
             >
-              {Array.from(itemToBuy).map((itemBag, index) => (
+              {/* FIXME */}
+              {itemToBuy.map((itemBag, index) => (
                 <Grid item xs={2} sm={3} md={3} key={index}>
                   <ItemBag data={itemBag} />
                 </Grid>
@@ -131,6 +141,7 @@ export default function ShopBag() {
           item
           xs={4}
         >
+          {/* FIXME */}
           <Paper elevation={10} style={paperStyles}>
             <Grid
               container
