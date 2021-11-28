@@ -83,7 +83,10 @@ export default async (
   } else if (req.method === 'GET') {
     const { db } = await connect();
 
-    const response = await db.getCollectionName('items');
+    const { quantity } = await req.body;
+    console.log(quantity, 'hey im here response 000');
+
+    const response = await db.collections('items').findOne({ quantity });
     console.log(response, 'hey im here response 001');
 
     if (!response) {

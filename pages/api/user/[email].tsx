@@ -31,7 +31,9 @@ export default async (
 
     console.log(email, 'here ');
 
-    if (email === undefined) {
+    if (email === 'undefined') {
+      res.end();
+      return;
     }
 
     console.log(email, 'I pass again ');
