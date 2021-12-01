@@ -62,6 +62,31 @@ export default async (
 
     res.status(200).json(response);
     res.end();
+  } else if (req.method === 'DELETE') {
+    const { db } = await connect();
+
+    const { id } = req.query;
+
+    if (!id) {
+      res.status(400).json({ error: ` Missing Id on request body` });
+      res.end();
+      return;
+    }
+
+    const response = await db.collection('orders').deleteOne({
+      _id: new ObjectId(id),
+    });
+
+    if (!response) {
+      res.status(400).json({ error: `The order with ID=${id} was not found` });
+      res.end();
+      return;
+    }
+
+    res.status(200).json({ message: `Order deleted successfully` });
+    res.end();
+
+    //
   } else {
     res.status(400).json({ error: ` Wrong request method!` });
     res.end();

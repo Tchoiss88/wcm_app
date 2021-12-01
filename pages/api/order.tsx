@@ -97,26 +97,19 @@ export default async (
   } else if (req.method === 'GET') {
     const { db } = await connect();
 
-    const { id } = req.body;
+    const collection = db.collection('orders');
 
-    if (!id) {
-      res.status(400).json({ error: ` Missing Id on request body` });
-      res.end();
-      return;
-    }
-
-    const response = await db.collection('orders').findOne({
-      _id: new ObjectId(id),
-    });
+    const response = await collection.find({}).toArray();
 
     if (!response) {
-      res.status(400).json({ error: `The order with ID=${id} was not found` });
+      res.status(400).json({ error: `No orders found in the database` });
       res.end();
       return;
     }
 
     res.status(200).json(response);
     res.end();
+    return;
     //
   } else {
     res.status(400).json({ error: ` Wrong request method!` });

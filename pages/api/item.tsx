@@ -83,11 +83,9 @@ export default async (
   } else if (req.method === 'GET') {
     const { db } = await connect();
 
-    const { quantity } = await req.body;
-    console.log(quantity, 'hey im here response 000');
+    const collection = db.collection('items');
 
-    const response = await db.collections('items').findOne({ quantity });
-    console.log(response, 'hey im here response 001');
+    const response = await collection.find({}).toArray();
 
     if (!response) {
       res.status(400).json({ error: `No items in the stock` });
