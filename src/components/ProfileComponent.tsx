@@ -1,5 +1,8 @@
 'use strict';
 import * as React from 'react';
+import { useSession } from 'next-auth/client';
+import useSWR from 'swr';
+import api from 'utils/api';
 
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
@@ -23,8 +26,9 @@ interface State {
   email: string;
   password: string;
   confirmPassword: string;
-  phoneNumber?: string;
+  cellphone?: number;
   address: string;
+  userType: string;
   birthDate: Date | null;
   gender: string;
   showPassword: boolean;
@@ -32,19 +36,6 @@ interface State {
   hoursForWeek?: { id: string; hours: number }[];
 }
 
-const initialFormValues = {
-  fullName: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-  phoneNumber: '',
-  address: '',
-  birthDate: null,
-  gender: '',
-  showPassword: false,
-  worker: true,
-  hoursForWeek: [],
-};
 
 const hoursToWorkForWeek = [
   {
@@ -79,32 +70,69 @@ const genders = [
   },
 ];
 
+const users = [
+  {
+    value: 'worker',
+    label: 'Worker',
+  },
+  {
+    value: 'client',
+    label: 'Customer',
+  },
+];
+
 export default function ProfileComponent(props) {
-  const [values, setValues] = React.useState<State>(initialFormValues);
-  const [errors, setErrors] = React.useState<State>();
+  // My values
+  const [fullName, setFullName] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [address, setAddress] = React.useState('');
+  const [gender, setGender] = React.useState('');
+  const [userType, setUserType] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [confirmPassword, setConfirmPassword] = React.useState('');
+  const [birthDate, setBirthDate] = React.useState(0);
+  const [cellphone, setCellphone = React.useState(0);
+  const [workHoursWeekly, setWorkHoursWeekly] = React.useState('');
+  const showContact=false;
+  const [showPassword, setShowPassword] = React.useState('false');
 
-  const handleChange =
-    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      const {
-        target: { value },
-      } = event;
-      // FIXME
-      setValues({ ...values, [prop]: event.target.value });
-      setErrors({ value });
+  const [errors, setErrors] = React.useState();
+  const [loggedUserWithoutAccount, setLoggedUserWithoutAccount] =
+    React.useState(false);
 
-      // phone number validation
-      let phoneValidation = new RegExp(/^\d*$/).test(values.phoneNumber);
-      if (!phoneValidation) {
-        setErrors({ phoneNumber: 'Only numbers are permitted' });
-      }
-    };
+  const [session, loading] = useSession();
+
+  const { data, error } = useSWR(
+    !loggedUserWithoutAccount && !loading
+      ? `/api/user/${session?.user.email}`
+      : null,
+    api
+  );
+
+  React.useEffect(() => {
+    if (error) setLoggedUserWithoutAccount(true);
+  }, [error]);
+
+  // const handleChange =
+  //   (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
+  //     const {
+  //       target: { value },
+  //     } = event;
+
+  //     // FIXME
+  //     setValues({ ...values, [prop]: event.target.value });
+  //     setErrors({ value });
+
+  //     // phone number validation
+  //     let phoneValidation = new RegExp(/^\d*$/).test(values.phoneNumber);
+  //     if (!phoneValidation) {
+  //       setErrors({ phoneNumber: 'Only numbers are permitted' });
+  //     }
+  //   };
 
   // hide/ show the password value
   const handleClickShowPassword = () => {
-    setValues({
-      ...values,
-      showPassword: !values.showPassword,
-    });
+    setShowPassword('true');
   };
 
   const handleMouseDownPassword = (
@@ -113,11 +141,33 @@ export default function ProfileComponent(props) {
     event.preventDefault();
   };
 
+  // TODO handle submit button
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = {
+      fullName,
+email, 
+address,
+gender,
+userType, 
+password,
+confirmPassword,
+birthDate, 
+cellphone, 
+workHoursWeekly,
+showContact,
+showPassword, 
+    }
+
+    console.log(data, 'values');
+  };
+
   const paperStyles = { padding: '30px 20px', width: 750, margin: '10px auto' };
 
   return (
     <Container className={styles.page}>
-      <form>
+      <form onSubmit={handleSubmit}>
         <Paper
           component="form"
           noValidate
@@ -153,14 +203,14 @@ export default function ProfileComponent(props) {
                   variant="standard"
                   label="Full Name:"
                   id="fullName"
-                  value={values.fullName}
-                  onChange={handleChange('fullName')}
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
                   inputProps={{
                     inputMode: 'text',
                     maxLength: 70,
                   }}
-                  error={Boolean(errors?.fullName)}
-                  helperText={errors?.fullName}
+                  error={Boolean(fullName)}
+                  helperText={fullName}
                 />
               </Grid>
               <Grid item xs={8}>
@@ -169,16 +219,16 @@ export default function ProfileComponent(props) {
                   fullWidth
                   label="Email:"
                   id="email"
-                  value={values.email}
+                  value={email}
                   variant="standard"
-                  onChange={handleChange('email')}
+                  onChange={(e) => setEmail(e.target.value)}
                   inputProps={{
                     pattern:
                       '/^([a-zA-Z0-9._]+)@([a-zA-Z0-9])+.([a-z]+)(.[a-z]+)?$/',
                     maxLength: 50,
                   }}
-                  error={Boolean(errors?.email)}
-                  helperText={errors?.email}
+                  error={Boolean(email)}
+                  helperText={email}
                 />
               </Grid>
               <Grid item xs={4}>
@@ -186,16 +236,16 @@ export default function ProfileComponent(props) {
                   fullWidth
                   id="phoneNumber"
                   label="Phone Number:"
-                  value={values.phoneNumber}
+                  value={cellphone}
                   variant="standard"
-                  onChange={handleChange('phoneNumber')}
+                  onChange={(e) => setCellphone(e.target.value)}
                   inputProps={{
                     inputMode: 'numeric',
-                    pattern: '/^d*$/',
+                    // pattern: '/^d*$/',
                     maxLength: 15,
                   }}
-                  error={Boolean(errors?.phoneNumber)}
-                  helperText={errors?.phoneNumber}
+                  error={Boolean(cellphone)}
+                  helperText={cellphone}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -208,21 +258,20 @@ export default function ProfileComponent(props) {
                   inputProps={{
                     maxLength: 100,
                   }}
-                  value={values.address}
-                  onChange={handleChange('address')}
-                />
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
               </Grid>
 
-              <Grid item xs={6}>
+              <Grid item xs={4}>
                 <TextField
                   required
                   fullWidth
                   id="password"
                   label="Password"
-                  type={values.showPassword ? 'text' : 'password'}
-                  value={values.password}
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
                   variant="standard"
-                  onChange={handleChange('password')}
+                  onChange{() => setPassword(e.target.value)}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -232,39 +281,7 @@ export default function ProfileComponent(props) {
                           onMouseDown={handleMouseDownPassword}
                           edge="end"
                         >
-                          {values.showPassword ? (
-                            <VisibilityOff />
-                          ) : (
-                            <Visibility />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="confirmPassword"
-                  label="Confirm Password"
-                  type={values.showPassword ? 'text' : 'password'}
-                  value={values.confirmPassword}
-                  variant="standard"
-                  onChange={handleChange('confirmPassword')}
-                  error={Boolean(errors?.confirmPassword)}
-                  helperText={errors?.confirmPassword}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge="end"
-                        >
-                          {values.showPassword ? (
+                          {showPassword ? (
                             <VisibilityOff />
                           ) : (
                             <Visibility />
@@ -279,10 +296,60 @@ export default function ProfileComponent(props) {
                 <TextField
                   required
                   fullWidth
+                  id="confirmPassword"
+                  label="Confirm Password"
+                  type={showPassword ? 'text' : 'password'}
+                  value={confirmPassword}
+                  variant="standard"
+                  onChange={handleChange('confirmPassword')}
+                  error={Boolean(confirmPassword)}
+                  helperText={confirmPassword}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? (
+                            <VisibilityOff />
+                          ) : (
+                            <Visibility />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  required
+                  fullWidth
+                  id="userType"
+                  select
+                  label="User Type"
+                  value={userType}
+                  onChange={handleChange('userType')}
+                  variant="standard"
+                >
+                  {users.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  required
+                  fullWidth
                   id="gender"
                   select
                   label="Gender"
-                  value={values.gender}
+                  value={gender}
                   onChange={handleChange('gender')}
                   variant="standard"
                 >
@@ -300,8 +367,8 @@ export default function ProfileComponent(props) {
                   id="hoursWeek"
                   select
                   label="Hours For Day "
-                  value={values.hoursForWeek}
-                  onChange={handleChange('hoursForWeek')}
+                  value={workHoursWeekly}
+                  onChange={handleChange('workHoursWeekly')}
                   variant="standard"
                 >
                   {hoursToWorkForWeek.map((option) => (
@@ -330,7 +397,7 @@ export default function ProfileComponent(props) {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  value={values.birthDate}
+                  value={birthDate}
                   onChange={handleChange('birthDate')}
                   variant="standard"
                 />
@@ -343,8 +410,9 @@ export default function ProfileComponent(props) {
                 justifyContent="space-around"
                 alignItems="center"
               >
-                <Button variant="contained">edit</Button>
-                <Button variant="contained">save</Button>
+                <Button type="submit" variant="contained">
+                  save
+                </Button>
               </Grid>
             </Grid>
           </Box>

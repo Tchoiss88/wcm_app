@@ -22,7 +22,7 @@ const Order: NextPage = () => {
         alignItems="center"
       >
         <h2>{`${
-          orders.length <= 0 ? 'You do not have any orders ' : 'Orders'
+          orders.length > 0 ? 'Orders' : 'You do not have any orders '
         }`}</h2>
       </Grid>
 

@@ -98,14 +98,20 @@ export default async (
 
     const { id } = req.query;
 
+    let size = [];
+    let quantity = 5;
+
+    console.log(id, size, 'SIZE', quantity, 'QUANTITY');
+
     if (!id) {
       res.status(400).json({ error: ` Missing Id on request body` });
       res.end();
       return;
     }
 
-    const response = await db.collection('items').deleteOne({
+    const response = await db.collection('items').update({
       _id: new ObjectId(id),
+      quantity: quantity,
     });
 
     if (!response) {
@@ -114,7 +120,7 @@ export default async (
       return;
     }
 
-    res.status(200).json({ message: `Item deleted successfully` });
+    res.status(200).json({ message: `Item updated successfully` });
     res.end();
 
     //
