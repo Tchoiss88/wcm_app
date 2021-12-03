@@ -45,7 +45,7 @@ export default async (
         image?: string;
         gender: string;
         userType: string;
-        birthDate: number;
+        birthDate: string;
         cellphone: number;
         workHoursWeekly?: number;
         showContact: Boolean;
@@ -60,7 +60,6 @@ export default async (
           !gender ||
           !birthDate ||
           !cellphone ||
-          !workHoursWeekly ||
           !showContact
         ) {
           res
@@ -79,7 +78,7 @@ export default async (
           userType,
           birthDate,
           cellphone,
-          workHoursWeekly: workHoursWeekly || null,
+          workHoursWeekly: null,
           showContact,
           orders: orders || [],
         });
@@ -115,9 +114,9 @@ export default async (
           userType,
           birthDate,
           cellphone,
-          workHoursWeekly: workHoursWeekly || null,
+          workHoursWeekly,
           showContact,
-          orders: orders || [],
+          orders: [],
         });
 
         res.status(200).json(response.ops[0]);

@@ -34,10 +34,23 @@ let useClickOutside = (handler) => {
 const Navbar: NextPage = () => {
   const [menu, setMenu] = useState(false);
   const showMenu = () => setMenu(!menu);
-  const [session] = useSession();
+  const [session, loading] = useSession();
   const router = useRouter();
 
-  const { data } = useSWR(`/api/user/${session?.user.email}`, api);
+  const [loggedUserWithoutAccount, setLoggedUserWithoutAccount] =
+    React.useState(false);
+
+  const { data, error } = useSWR(
+    !loggedUserWithoutAccount && !loading
+      ? `/api/user/${session?.user.email}`
+      : null,
+    api
+  );
+
+  React.useEffect(() => {
+    if (error) setLoggedUserWithoutAccount(true);
+  }, [error]);
+
   const user = data?.data.userType;
 
   let domNode = useClickOutside(() => {
