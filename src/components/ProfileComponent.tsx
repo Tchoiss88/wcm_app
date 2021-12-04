@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { useSession } from 'next-auth/client';
 import useSWR from 'swr';
+import axios from 'axios';
 import api from 'utils/api';
 
 import Box from '@mui/material/Box';
@@ -50,20 +51,28 @@ export default function ProfileComponent(props) {
     if (error) setLoggedUserWithoutAccount(true);
   }, [error]);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     const data = {
       fullName,
       email,
       address,
       gender,
+      image: '',
       userType,
       birthDate,
-      cellphone,
+      cellphone: parseInt(cellphone),
       workHoursWeekly,
+
+      orders: [],
     };
 
-    console.log(data, 'Data to submit');
+    try {
+      const response = await axios.post(`http://localhost:3000/api/user`, data);
+    } catch (err) {
+      alert(err.response.data.error);
+    }
   };
 
   const paperStyles = { padding: '30px 20px', width: 750, margin: '10px auto' };

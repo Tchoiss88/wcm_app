@@ -13,9 +13,9 @@ interface SuccessResponseType {
   image?: string;
   gender: string;
   userType: string;
-  birthDate: number;
+  birthDate: string;
   cellphone: number;
-  workHoursWeekly?: number;
+  workHoursWeekly?: number | null;
   showContact: Boolean;
   orders?: [];
 }
@@ -59,12 +59,11 @@ export default async (
           !address ||
           !gender ||
           !birthDate ||
-          !cellphone ||
-          !showContact
+          !cellphone
         ) {
           res
             .status(400)
-            .json({ error: ` Missing body parameter on worker account!` });
+            .json({ error: ` Missing body parameter on client account!` });
           return;
         }
         const { db } = await connect();
@@ -93,9 +92,7 @@ export default async (
           !address ||
           !gender ||
           !birthDate ||
-          !cellphone ||
-          !workHoursWeekly ||
-          !showContact
+          !cellphone
         ) {
           res
             .status(400)
@@ -116,7 +113,7 @@ export default async (
           cellphone,
           workHoursWeekly,
           showContact,
-          orders: [],
+          orders: orders || [],
         });
 
         res.status(200).json(response.ops[0]);
