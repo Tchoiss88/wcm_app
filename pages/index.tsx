@@ -9,7 +9,7 @@ import api from 'utils/api';
 
 export default function Home() {
   const [session] = useSession();
-
+  // FIXME
   const { data } = useSWR(`/api/user/${session?.user.email}`, api);
 
   function getUserName() {
@@ -25,7 +25,7 @@ export default function Home() {
   const stock = useStore((state) => state.stock);
 
   const key = 'category';
-  //FIXME
+
   const categories = [
     ...new Map(stock.map((item) => [item[key], item])).values(),
   ];

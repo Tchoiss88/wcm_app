@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import { Container, Grid, Box } from '@mui/material';
+import { Grid, Box } from '@mui/material';
 import styles from 'styles/Order.module.css';
 import OrderComponent from '../src/components/Order.component';
 import { useSession } from 'next-auth/client';
@@ -14,7 +14,7 @@ const Order: NextPage = () => {
   const orders = data?.data.orders ? data?.data.orders : [];
 
   return (
-    <Container className={styles.page}>
+    <Box className={styles.page}>
       <Grid
         container
         direction="row"
@@ -39,7 +39,7 @@ const Order: NextPage = () => {
           ))}
         </Grid>
       </Box>
-    </Container>
+    </Box>
   );
 };
 

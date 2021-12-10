@@ -3,10 +3,11 @@ import { Box, Container, Grid, Button, Paper } from '@mui/material';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-import styles from 'styles/Navbar.module.css';
 import { useSession } from 'next-auth/client';
 import useSWR from 'swr';
 import api from 'utils/api';
+import OrderItemDetails from '../components/OrderItemDetails';
+import axios from 'axios';
 
 const steps = [
   'Payment In Process',
@@ -17,26 +18,37 @@ const steps = [
 ];
 
 interface Order {
-  _id: string;
+  id: string;
   email: string;
-  fullName: string;
-  createDate: Date;
-  deliveryDate: Date;
-  orderState: number;
-  orderItem: [];
-  orderSummary: {};
+  cancellation: Boolean;
 }
 
 const paperStyles = { padding: '30px 20px', width: 1000, margin: '20px auto' };
 
 function OrderComponent(props) {
   const [session] = useSession();
+  const [showDetail, setShowDetail] = React.useState(false);
+  const [cancelResult, setCancelResult] = React.useState(false);
+  const [canCancelResult, setCanCancelResult] = React.useState({});
+
+  const toggleShowDetail = (e) => {
+    e.preventDefault();
+
+    if (showDetail) {
+      setShowDetail(false);
+      return;
+    }
+    if (!showDetail) {
+      setShowDetail(true);
+      return;
+    }
+  };
 
   const { data } = useSWR(`/api/user/${session?.user.email}`, api);
   const user = data?.data.userType;
 
   let createDate = createDateConvert(props.data.createDate);
-  let deliveryDate = deliveryDateConvert(props.data.deliveryEstimatedDate);
+  let deliveryDate = deliveryDateConvert(props.data.deliveryDate);
 
   function createDateConvert(timestamp) {
     let dateObj = new Date(timestamp);
@@ -57,34 +69,69 @@ function OrderComponent(props) {
   }
 
   let deliveryCost = () => {
-    if (props.data.orderSummary.deliveryCost !== 'Free') {
-      return `${props.data.orderSummary.deliveryCost.toFixed(2)} €`;
+    if (props.data.orderSummary.delivery !== 'Free') {
+      return `${props.data.orderSummary.delivery.toFixed(2)} €`;
     } else {
       return 'Free';
     }
   };
 
+  const cancelOrder = async (e) => {
+    e.preventDefault();
+    const data = canCancelResult;
+
+    try {
+      if (window.confirm('Are you sure you want to cancel the order')) {
+        const response = await axios
+          .delete(`http://localhost:3000/api/order/${data.id}`, data)
+          .then((response) => {
+            response.status;
+          });
+      }
+    } catch {
+      alert('Can not delete the order');
+      return;
+    }
+  };
+
+  function canICancelThisOrder(e) {
+    e.preventDefault();
+
+    let orderToCancel = {
+      id: props.data._id,
+      email: props.data.email,
+      cancellation: true,
+    };
+
+    setCanCancelResult(orderToCancel);
+
+    console.log(orderToCancel);
+  }
+
+  // console.log(props.data.orderItems, 'Items');
+
   return (
     <>
       <Container>
         <Paper elevation={10} style={paperStyles}>
-          <div
-            className={
-              user === 'worker'
-                ? styles.workerMenuShow
-                : styles.workerMenuNotShow
-            }
-          >
+          {user === 'worker' && (
             <Grid
               container
               direction="row"
               justifyContent="space-around"
               alignItems="center"
             >
-              <Button variant="contained">Accept Cancellation</Button>
-              <Button variant="contained">Next State</Button>
+              {canCancelResult?.cancellation && (
+                <Button variant="contained" onClick={cancelOrder}>
+                  cancel order
+                </Button>
+              )}
+              {canCancelResult?.cancellation !== true && (
+                <Button variant="contained">Next State</Button>
+              )}
             </Grid>
-          </div>
+          )}
+
           <Grid
             container
             direction="row"
@@ -148,7 +195,7 @@ function OrderComponent(props) {
             <span>{`Delivery cost: ${deliveryCost()}`}</span>
             <span>{`Total price: ${props.data.orderSummary.total.toFixed(
               2
-            )} €`}</span>
+            )} `}</span>
           </Grid>
           <Grid
             container
@@ -156,8 +203,27 @@ function OrderComponent(props) {
             justifyContent="space-around"
             alignItems="center"
           >
-            <Button variant="contained">Cancel order</Button>
+            <Button variant="contained" onClick={canICancelThisOrder}>
+              Cancel order
+            </Button>
+            <Button variant="contained" onClick={toggleShowDetail}>
+              Order Details
+            </Button>
           </Grid>
+
+          {showDetail && (
+            <Grid
+              container
+              direction="row"
+              justifyContent="space-around"
+              alignItems="center"
+            >
+              <span>Items</span>
+              {props.data.orderItems.map((item, i) => {
+                <OrderItemDetails data={item} key={i} />;
+              })}
+            </Grid>
+          )}
         </Paper>
       </Container>
     </>
@@ -165,3 +231,6 @@ function OrderComponent(props) {
 }
 
 export default OrderComponent;
+function setStatus(arg0: string): any {
+  throw new Error('Function not implemented.');
+}

@@ -18,7 +18,7 @@ interface SuccessResponseType {
   address: string;
   cellphone: number;
   createDate: number;
-  deliveryEstimatedDate: number;
+  deliveryDate: number;
   orderState: number;
   orderItems: [];
   orderSummary: {};
@@ -45,7 +45,8 @@ export default async (
       address,
       cellphone,
       createDate,
-      deliveryEstimatedDate,
+      deliveryDate,
+      orderState,
       orderItems,
       orderSummary,
     }: {
@@ -54,7 +55,8 @@ export default async (
       address: string;
       cellphone: number;
       createDate: number;
-      deliveryEstimatedDate: number;
+      deliveryDate: number;
+      orderState: number;
       orderItems: [];
       orderSummary: {};
     } = req.body;
@@ -65,7 +67,6 @@ export default async (
       !address ||
       !cellphone ||
       !createDate ||
-      !deliveryEstimatedDate ||
       !orderItems ||
       !orderSummary
     ) {
@@ -81,8 +82,8 @@ export default async (
       address,
       cellphone,
       createDate,
-      deliveryEstimatedDate,
-      orderState: 0,
+      deliveryDate,
+      orderState,
       orderItems,
       orderSummary,
     };
@@ -110,6 +111,29 @@ export default async (
     res.status(200).json(response);
     res.end();
     return;
+    //
+  } else if (req.method === 'DELETE') {
+    const { db } = await connect();
+
+    const { id, email } = await db.req.query;
+
+    if (!id && !email) {
+      res.status(400).json({ error: ` Missing Id on request body` });
+      res.end();
+      return;
+    }
+
+    await db.collection('orders').deleteOne({
+      _id: new ObjectId(id),
+    });
+
+    await db
+      .collection('users')
+      .updateOne({ email: email }, { $filter: { orders: new ObjectId(id) } });
+
+    res.status(200).json({ message: `Order deleted successfully` });
+    res.end();
+
     //
   } else {
     res.status(400).json({ error: ` Wrong request method!` });

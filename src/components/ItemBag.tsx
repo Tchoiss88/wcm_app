@@ -5,7 +5,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { removeItem } from '../redux/actions/index';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 const paperStyles = { padding: '10px 10px', width: '100%' };
 const imgCardStyles = { width: '70%', height: '60px' };

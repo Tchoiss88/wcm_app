@@ -73,6 +73,7 @@ export default function ProfileComponent(props) {
     } catch (err) {
       alert(err.response.data.error);
     }
+    alert('Profile created successfully');
   };
 
   const paperStyles = { padding: '30px 20px', width: 750, margin: '10px auto' };

@@ -7,6 +7,7 @@ import { Container, Grid, Box, Paper, Button } from '@mui/material';
 import ItemBag from 'src/components/ItemBag';
 
 import styles from 'styles/ShopBag.module.css';
+import axios from 'axios';
 
 export default function ShopBag() {
   const [session] = useSession();
@@ -23,7 +24,7 @@ export default function ShopBag() {
 
   // window.localStorage.getItem('shopBagItems');
 
-  const itemToBuy = useSelector((state) => state);
+  let itemToBuy = useSelector((state) => state);
 
   const itemsTotalPrice = calculatedItemsTotalPrice();
 
@@ -47,40 +48,40 @@ export default function ShopBag() {
 
   function calculatedDelivery() {
     if (itemsTotalPrice === 0) {
-      return `${(0).toFixed(2)} €`;
+      return 0;
     }
     if (itemsTotalPrice > 0 && itemsTotalPrice < 100) {
-      return `${(5).toFixed(2)} €`;
+      return 5;
     } else {
       return 'Free';
     }
   }
 
   function calculatedTotal() {
-    if (delivery === 'Free' || delivery === `${(0).toFixed(2)} €`) {
+    if (delivery === 'Free' || delivery === 0) {
       return itemsTotalPrice;
-    } else if (delivery === `${(5).toFixed(2)} €`) {
+    } else if (delivery === 5) {
       return itemsTotalPrice + 5;
     }
   }
 
-  function handleClickCheckout() {
+  const handleClickCheckout = async (e) => {
+    e.preventDefault();
+
     let order;
     if (!session) {
       signIn('auth0');
       return;
     } else {
       order = {
-        id: `${data.data.fullName.slice(0, 3)}${data.data.fullName.slice(
-          -4,
-          -1
-        )}${Date.now()}`,
-        email: data.data.email,
         fullName: `${data.data.fullName} `,
+        email: data.data.email,
+        address: data.data.address,
+        cellphone: data.data.cellphone,
         createDate: Date.now(),
         deliveryDate: Date.now(),
         orderState: 0,
-        orderItems: Array.from(itemToBuy),
+        orderItems: itemToBuy,
         orderSummary: {
           itemsPrice: itemsTotalPrice,
           delivery: delivery,
@@ -88,13 +89,27 @@ export default function ShopBag() {
         },
       };
 
-      if (order.orderSummary.total > 0) {
+      if (order.orderSummary.total <= 0) {
         data.data.orders.push(order);
+        alert(
+          `The order can not be created because you do not have items in the bag`
+        );
+        return;
+      }
+
+      try {
+        const response = await axios.post(
+          `http://localhost:3000/api/order`,
+          order
+        );
+      } catch (err) {
+        alert(err.response.data.error);
+        return;
       }
 
       console.log(data.data, 'data', 'order', order);
     }
-  }
+  };
 
   return (
     <Container className={styles.page}>
@@ -178,7 +193,9 @@ export default function ShopBag() {
                 xs={12}
               >
                 <h3>{`Est. Delivery:`}</h3>
-                <h3>{delivery}</h3>
+                <h3>
+                  {delivery === 'Free' ? delivery : `${delivery.toFixed(2)} €`}
+                </h3>
               </Grid>
               <Grid
                 container
