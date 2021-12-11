@@ -70,10 +70,10 @@ export default function ProfileComponent(props) {
 
     try {
       const response = await axios.post(`http://localhost:3000/api/user`, data);
+      alert('Profile created successfully');
     } catch (err) {
       alert(err.response.data.error);
     }
-    alert('Profile created successfully');
   };
 
   const paperStyles = { padding: '30px 20px', width: 750, margin: '10px auto' };

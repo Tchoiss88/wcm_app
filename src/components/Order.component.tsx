@@ -28,7 +28,6 @@ const paperStyles = { padding: '30px 20px', width: 1000, margin: '20px auto' };
 function OrderComponent(props) {
   const [session] = useSession();
   const [showDetail, setShowDetail] = React.useState(false);
-  const [cancelResult, setCancelResult] = React.useState(false);
   const [canCancelResult, setCanCancelResult] = React.useState({});
 
   const toggleShowDetail = (e) => {
@@ -78,18 +77,43 @@ function OrderComponent(props) {
 
   const cancelOrder = async (e) => {
     e.preventDefault();
-    const data = canCancelResult;
 
     try {
       if (window.confirm('Are you sure you want to cancel the order')) {
         const response = await axios
-          .delete(`http://localhost:3000/api/order/${data.id}`, data)
+          .delete(`http://localhost:3000/api/order/${canCancelResult.id}`, {
+            data: { email: canCancelResult.email },
+          })
           .then((response) => {
             response.status;
           });
+
+        window.location.reload(false);
       }
     } catch {
       alert('Can not delete the order');
+      return;
+    }
+  };
+
+  //TODO
+  const updateOrder = async (e) => {
+    e.preventDefault();
+    let id = props.data._id;
+
+    console.log(id);
+
+    try {
+      const response = await axios
+        .patch(`http://localhost:3000/api/order/${id}`, {
+          orderState: props.data.orderState + 1,
+          email: props.data.email,
+        })
+        .then((response) => {
+          response.status;
+        });
+    } catch {
+      alert('Can not update the order');
       return;
     }
   };
@@ -104,8 +128,6 @@ function OrderComponent(props) {
     };
 
     setCanCancelResult(orderToCancel);
-
-    console.log(orderToCancel);
   }
 
   // console.log(props.data.orderItems, 'Items');
@@ -127,7 +149,9 @@ function OrderComponent(props) {
                 </Button>
               )}
               {canCancelResult?.cancellation !== true && (
-                <Button variant="contained">Next State</Button>
+                <Button variant="contained" onClick={updateOrder}>
+                  Next State
+                </Button>
               )}
             </Grid>
           )}

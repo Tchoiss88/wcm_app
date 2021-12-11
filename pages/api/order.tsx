@@ -33,11 +33,10 @@ export default async (
   if (req.method === 'POST') {
     const session = await getSession({ req });
 
-    // FIXME
-    // if (!session) {
-    //   res.status(400).json({ error: ` Please login first!` });
-    //   return;
-    // }
+    if (!session) {
+      res.status(400).json({ error: ` Please login first!` });
+      return;
+    }
 
     const {
       fullName,
@@ -111,29 +110,6 @@ export default async (
     res.status(200).json(response);
     res.end();
     return;
-    //
-  } else if (req.method === 'DELETE') {
-    const { db } = await connect();
-
-    const { id, email } = await db.req.query;
-
-    if (!id && !email) {
-      res.status(400).json({ error: ` Missing Id on request body` });
-      res.end();
-      return;
-    }
-
-    await db.collection('orders').deleteOne({
-      _id: new ObjectId(id),
-    });
-
-    await db
-      .collection('users')
-      .updateOne({ email: email }, { $filter: { orders: new ObjectId(id) } });
-
-    res.status(200).json({ message: `Order deleted successfully` });
-    res.end();
-
     //
   } else {
     res.status(400).json({ error: ` Wrong request method!` });

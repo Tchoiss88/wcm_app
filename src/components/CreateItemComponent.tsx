@@ -1,291 +1,211 @@
 'use strict';
 import * as React from 'react';
-
+import axios from 'axios';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-
 import styles from 'styles/CreateUser.module.css';
-import Avatar from '@mui/material/Avatar';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import MenuItem from '@mui/material/MenuItem';
-import { Button } from '@mui/material';
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  SelectChangeEvent,
+} from '@mui/material';
 
-interface State {
-  _id?: string;
-  category: string;
-  name: string;
-  root_name: string;
-  gender: string;
-  price: number;
-  quantity: number;
-  insertDate: Date | null;
-  url?: string;
-  description: string;
-  size?: string;
-}
+export default function CreateItemComponent(props) {
+  // My values
+  const [title, setTitle] = React.useState('');
+  const [category, setCategory] = React.useState('');
+  const [description, setDescription] = React.useState('');
+  const [image, setImage] = React.useState('');
+  const [gender, setGender] = React.useState('');
+  const [price, setPrice] = React.useState('');
+  const [quantity, setQuantity] = React.useState('');
+  const [size, setSize] = React.useState('');
 
-const initialFormValues = {
-  category: '',
-  name: '',
-  root_name: '',
-  gender: '',
-  price: 0,
-  quantity: 1,
-  insertDate: null,
-  url: '',
-  description: '',
-  size: '',
-};
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
-const genders = [
-  {
-    value: 'female',
-    label: 'Female',
-  },
-  {
-    value: 'male',
-    label: 'Male',
-  },
-  {
-    value: 'uniSex',
-    label: 'Uni Sex',
-  },
-];
-
-const sizes = [
-  {
-    value: 'extraSmall',
-    label: 'XS = 32 - 36',
-  },
-  {
-    value: 'small',
-    label: 'S = 36 - 40',
-  },
-  {
-    value: 'medium',
-    label: 'M  = 40 - 44',
-  },
-  {
-    value: 'large',
-    label: 'L = 44 - 48',
-  },
-  {
-    value: 'extraLarge',
-    label: 'XL = 48 - 52',
-  },
-  {
-    value: 'extraExtraLarge',
-    label: 'XXL = 52 - 56',
-  },
-];
-
-export default function CreateUserComponent() {
-  const [values, setValues] = React.useState<State>(initialFormValues);
-  const [errors, setErrors] = React.useState<State>();
-
-  const handleChange =
-    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      const {
-        target: { value },
-      } = event;
-      // FIXME
-      setValues({ ...values, [prop]: event.target.value });
-      setErrors({ value });
-
-      // phone number validation
-      let price = new RegExp(/^\d*$/).test(values.price);
-      let quantity = new RegExp(/^\d*$/).test(values.quantity);
-      if (!price) {
-        setErrors({ price: 'Only numbers are permitted' });
-      }
-      if (!quantity) {
-        setErrors({ quantity: 'Only numbers are permitted' });
-      }
+    const data = {
+      title,
+      category,
+      description,
+      gender,
+      image,
+      price: parseInt(price),
+      quantity: parseInt(quantity),
+      sizes: [
+        {
+          size: size,
+          quantity: parseInt(quantity),
+        },
+      ],
     };
+
+    try {
+      const response = await axios.post(`http://localhost:3000/api/item`, data);
+      alert('The item was created successfully');
+
+      setTitle('');
+      setCategory('');
+      setDescription('');
+      setImage('');
+      setGender('');
+      setPrice('');
+      setQuantity('');
+      setSize('');
+      //
+    } catch (err) {
+      alert(err.response.data.error);
+    }
+  };
 
   const paperStyles = { padding: '30px 20px', width: 750, margin: '10px auto' };
 
   return (
-    <Container className={styles.page}>
-      <form>
-        <Paper
-          component="form"
-          noValidate
-          autoComplete="off"
-          elevation={10}
-          style={paperStyles}
-        >
-          <Box>
-            <Grid container spacing={2}>
+    <>
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col items-center"
+        noValidate
+        autoComplete="off"
+      >
+        <Box className={styles.page}>
+          <Paper elevation={10} style={paperStyles}>
+            <Grid
+              container
+              rowSpacing={2}
+              columnSpacing={{ xs: 2, sm: 4, md: 2 }}
+              direction="row"
+              justifyContent="space-around"
+              alignItems="center"
+            >
               <Grid
                 item
-                xs={12}
+                md={6}
                 container
                 direction="row"
-                justifyContent="space-around"
+                justifyContent="center"
                 alignItems="center"
               >
-                <h2>Create Item</h2>
-                <Avatar sx={{ width: 70, height: 70 }}>
-                  <AddCircleOutlineIcon />
-                </Avatar>
+                <h2>Create Item </h2>
               </Grid>
-              <Grid item xs={12}>
+
+              <Grid item md={12}>
                 <TextField
-                  required
-                  fullWidth
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  label="Title:"
                   variant="standard"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item md={12}>
+                <TextField
+                  type="text"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
                   label="Category:"
-                  id="category"
-                  value={values.category}
-                  onChange={handleChange('category')}
-                  inputProps={{
-                    inputMode: 'text',
-                    maxLength: 70,
-                  }}
+                  variant="standard"
+                  fullWidth
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item md={12}>
                 <TextField
-                  required
-                  fullWidth
-                  label="Name:"
-                  id="name"
-                  value={values.name}
-                  variant="standard"
-                  onChange={handleChange('name')}
-                  inputProps={{
-                    maxLength: 50,
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  variant="standard"
+                  type="text"
+                  value={description}
                   label="Description:"
-                  id="description"
-                  inputProps={{
-                    maxLength: 200,
-                  }}
-                  value={values.description}
-                  onChange={handleChange('description')}
+                  onChange={(e) => setDescription(e.target.value)}
+                  variant="standard"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item md={12}>
+                <TextField
+                  type="text"
+                  value={image}
+                  label="Image:"
+                  onChange={(e) => setImage(e.target.value)}
+                  variant="standard"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item md={4}>
+                <TextField
+                  type="number"
+                  label="Price:"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  variant="standard"
+                  fullWidth
                 />
               </Grid>
 
-              <Grid item xs={6}>
-                {' '}
-                <TextField
-                  fullWidth
-                  id="price"
-                  label="Price:"
-                  value={values.price}
-                  variant="standard"
-                  onChange={handleChange('price')}
-                  inputProps={{
-                    inputMode: 'numeric',
-                    pattern: '/^d*$/',
-                    maxLength: 15,
-                  }}
-                  error={Boolean(errors?.price)}
-                  helperText={errors?.price}
-                />
+              <Grid item md={4}>
+                <FormControl fullWidth>
+                  <InputLabel id="gender">Gender</InputLabel>
+                  <Select
+                    variant="standard"
+                    value={gender}
+                    onChange={(event: SelectChangeEvent) => {
+                      setGender(event.target.value as string);
+                    }}
+                  >
+                    <MenuItem value={'female'}>Female</MenuItem>
+                    <MenuItem value={'male'}>Male</MenuItem>
+                    <MenuItem value={'others'}>Others</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
-              <Grid item xs={6}>
+
+              <Grid item md={4}>
+                <FormControl fullWidth>
+                  <InputLabel id="size">Size</InputLabel>
+                  <Select
+                    variant="standard"
+                    value={size}
+                    onChange={(event: SelectChangeEvent) => {
+                      setSize(event.target.value as string);
+                    }}
+                  >
+                    <MenuItem value={'female'}>Female</MenuItem>
+                    <MenuItem value={'male'}>Male</MenuItem>
+                    <MenuItem value={'others'}>Others</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              <Grid item md={6}>
                 <TextField
-                  fullWidth
-                  id="quantity"
+                  type="number"
                   label="Quantity:"
-                  value={values.quantity}
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
                   variant="standard"
-                  onChange={handleChange('quantity')}
-                  inputProps={{
-                    inputMode: 'numeric',
-                    pattern: '/^d*$/',
-                    maxLength: 15,
-                  }}
-                  error={Boolean(errors?.quantity)}
-                  helperText={errors?.quantity}
+                  fullWidth
                 />
               </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  required
-                  fullWidth
-                  id="gender"
-                  select
-                  label="Gender"
-                  value={values.gender}
-                  onChange={handleChange('gender')}
-                  variant="standard"
-                >
-                  {genders.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  fullWidth
-                  id="size"
-                  select
-                  label="Size"
-                  value={values.size}
-                  onChange={handleChange('size')}
-                  variant="standard"
-                >
-                  {sizes.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
+
               <Grid
                 item
-                xs={4}
+                md={12}
                 container
                 direction="row"
                 justifyContent="center"
                 alignItems="center"
               >
-                <TextField
-                  fullWidth
-                  required
-                  id="insertDate"
-                  label="Insert Date"
-                  type="date"
-                  defaultValue="2001-11-21"
-                  sx={{ width: 220 }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  value={values.insertDate}
-                  onChange={handleChange('insertDate')}
-                  variant="standard"
-                />
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                container
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Button variant="contained">Submit</Button>
+                <Button variant="contained" type="submit">
+                  Save Item
+                </Button>
               </Grid>
             </Grid>
-          </Box>
-        </Paper>
+          </Paper>
+        </Box>
       </form>
-    </Container>
+    </>
   );
 }

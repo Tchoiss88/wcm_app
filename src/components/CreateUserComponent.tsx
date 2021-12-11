@@ -1,13 +1,12 @@
 'use strict';
 import * as React from 'react';
+import { useSession } from 'next-auth/client';
+import useSWR from 'swr';
+import axios from 'axios';
+import api from 'utils/api';
 
 import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
-import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 
@@ -15,334 +14,230 @@ import styles from 'styles/CreateUser.module.css';
 import Avatar from '@mui/material/Avatar';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import MenuItem from '@mui/material/MenuItem';
-import { Button } from '@mui/material';
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  SelectChangeEvent,
+} from '@mui/material';
 
-interface State {
-  _id?: string;
-  fullName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  phoneNumber?: string;
-  address: string;
-  birthDate: Date | null;
-  gender: string;
-  showPassword: boolean;
-  worker: boolean;
-  hoursForWeek?: { id: string; hours: number }[];
-}
+export default function CreateUserComponent(props) {
+  // My values
+  const [fullName, setFullName] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [address, setAddress] = React.useState('');
+  const [gender, setGender] = React.useState('');
+  const [userType, setUserType] = React.useState('');
+  const [birthDate, setBirthDate] = React.useState('');
+  const [cellphone, setCellphone] = React.useState('');
+  const [workHoursWeekly, setWorkHoursWeekly] = React.useState('');
 
-const initialFormValues = {
-  fullName: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-  phoneNumber: '',
-  address: '',
-  birthDate: null,
-  gender: '',
-  showPassword: false,
-  worker: true,
-  hoursForWeek: [],
-};
+  const [errors, setErrors] = React.useState();
 
-const hoursToWorkForWeek = [
-  {
-    value: 40,
-    label: 'Full Time 8h for day',
-  },
-  {
-    value: 30,
-    label: 'Part-Time 6h for day',
-  },
-  {
-    value: 25,
-    label: 'Part-Time 5h for day',
-  },
-  {
-    value: 20,
-    label: 'Part-Time 4h for day',
-  },
-];
-const genders = [
-  {
-    value: 'female',
-    label: 'Female',
-  },
-  {
-    value: 'male',
-    label: 'Male',
-  },
-  {
-    value: 'others',
-    label: 'Others',
-  },
-];
+  const [loggedUserWithoutAccount, setLoggedUserWithoutAccount] =
+    React.useState(false);
 
-export default function CreateUserComponent() {
-  const [values, setValues] = React.useState<State>(initialFormValues);
-  const [errors, setErrors] = React.useState<State>();
+  const [session, loading] = useSession();
 
-  const handleChange =
-    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      const {
-        target: { value },
-      } = event;
-      // FIXME
-      setValues({ ...values, [prop]: event.target.value });
-      setErrors({ value });
+  const { data, error } = useSWR(
+    !loggedUserWithoutAccount && !loading
+      ? `/api/user/${session?.user.email}`
+      : null,
+    api
+  );
 
-      // phone number validation
-      let phoneValidation = new RegExp(/^\d*$/).test(values.phoneNumber);
-      if (!phoneValidation) {
-        setErrors({ phoneNumber: 'Only numbers are permitted' });
-      }
+  React.useEffect(() => {
+    if (error) setLoggedUserWithoutAccount(true);
+  }, [error]);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const data = {
+      fullName,
+      email,
+      address,
+      gender,
+      image: '',
+      userType,
+      birthDate,
+      cellphone: parseInt(cellphone),
+      workHoursWeekly,
+
+      orders: [],
     };
 
-  // hide/ show the password value
-  const handleClickShowPassword = () => {
-    setValues({
-      ...values,
-      showPassword: !values.showPassword,
-    });
-  };
-
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault();
+    try {
+      const response = await axios.post(`http://localhost:3000/api/user`, data);
+      alert('Profile created successfully');
+    } catch (err) {
+      alert(err.response.data.error);
+    }
   };
 
   const paperStyles = { padding: '30px 20px', width: 750, margin: '10px auto' };
 
   return (
-    <Container className={styles.page}>
-      <form>
-        <Paper
-          component="form"
-          noValidate
-          autoComplete="off"
-          elevation={10}
-          style={paperStyles}
-        >
-          <Box>
-            <Grid container spacing={2}>
+    <>
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col items-center"
+        noValidate
+        autoComplete="off"
+      >
+        <Box className={styles.page}>
+          <Paper elevation={10} style={paperStyles}>
+            <Grid
+              container
+              rowSpacing={2}
+              columnSpacing={{ xs: 2, sm: 4, md: 2 }}
+              direction="row"
+              justifyContent="space-around"
+              alignItems="center"
+            >
               <Grid
                 item
-                xs={12}
-                container
-                direction="row"
-                justifyContent="space-around"
-                alignItems="center"
-              >
-                <h2>Create User</h2>
-                <Avatar sx={{ width: 70, height: 70 }}>
-                  <AddCircleOutlineIcon />
-                </Avatar>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  variant="standard"
-                  label="Full Name:"
-                  id="fullName"
-                  value={values.fullName}
-                  onChange={handleChange('fullName')}
-                  inputProps={{
-                    inputMode: 'text',
-                    maxLength: 70,
-                  }}
-                  error={Boolean(errors?.fullName)}
-                  helperText={errors?.fullName}
-                />
-              </Grid>
-              <Grid item xs={8}>
-                <TextField
-                  required
-                  fullWidth
-                  label="Email:"
-                  id="email"
-                  value={values.email}
-                  variant="standard"
-                  onChange={handleChange('email')}
-                  inputProps={{
-                    pattern:
-                      '/^([a-zA-Z0-9._]+)@([a-zA-Z0-9])+.([a-z]+)(.[a-z]+)?$/',
-                    maxLength: 50,
-                  }}
-                  error={Boolean(errors?.email)}
-                  helperText={errors?.email}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  fullWidth
-                  id="phoneNumber"
-                  label="Phone Number:"
-                  value={values.phoneNumber}
-                  variant="standard"
-                  onChange={handleChange('phoneNumber')}
-                  inputProps={{
-                    inputMode: 'numeric',
-                    pattern: '/^d*$/',
-                    maxLength: 15,
-                  }}
-                  error={Boolean(errors?.phoneNumber)}
-                  helperText={errors?.phoneNumber}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  variant="standard"
-                  label="Address:"
-                  id="address"
-                  inputProps={{
-                    maxLength: 100,
-                  }}
-                  value={values.address}
-                  onChange={handleChange('address')}
-                />
-              </Grid>
-
-              <Grid item xs={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="password"
-                  label="Password"
-                  type={values.showPassword ? 'text' : 'password'}
-                  value={values.password}
-                  variant="standard"
-                  onChange={handleChange('password')}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge="end"
-                        >
-                          {values.showPassword ? (
-                            <VisibilityOff />
-                          ) : (
-                            <Visibility />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="confirmPassword"
-                  label="Confirm Password"
-                  type={values.showPassword ? 'text' : 'password'}
-                  value={values.confirmPassword}
-                  variant="standard"
-                  onChange={handleChange('confirmPassword')}
-                  error={Boolean(errors?.confirmPassword)}
-                  helperText={errors?.confirmPassword}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge="end"
-                        >
-                          {values.showPassword ? (
-                            <VisibilityOff />
-                          ) : (
-                            <Visibility />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  required
-                  fullWidth
-                  id="gender"
-                  select
-                  label="Gender"
-                  value={values.gender}
-                  onChange={handleChange('gender')}
-                  variant="standard"
-                >
-                  {genders.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  required
-                  fullWidth
-                  id="hoursWeek"
-                  select
-                  label="Hours For Day "
-                  value={values.hoursForWeek}
-                  onChange={handleChange('hoursForWeek')}
-                  variant="standard"
-                >
-                  {hoursToWorkForWeek.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid
-                item
-                xs={4}
+                md={6}
                 container
                 direction="row"
                 justifyContent="center"
                 alignItems="center"
               >
+                <h2>Create User</h2>
+              </Grid>
+              <Grid
+                item
+                md={6}
+                container
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Avatar sx={{ width: 70, height: 70 }}>
+                  <AddCircleOutlineIcon />
+                </Avatar>
+              </Grid>
+              <Grid item md={12}>
+                <TextField
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  label="Full Name:"
+                  variant="standard"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item md={12}>
+                <TextField
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  label="Email:"
+                  variant="standard"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item md={12}>
+                <TextField
+                  type="text"
+                  value={address}
+                  label="Address:"
+                  onChange={(e) => setAddress(e.target.value)}
+                  variant="standard"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item md={4}>
+                <TextField
+                  type="cellphone"
+                  label="Cellphone:"
+                  value={cellphone}
+                  onChange={(e) => setCellphone(e.target.value)}
+                  variant="standard"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item md={4}>
+                <FormControl fullWidth>
+                  <InputLabel id="userType">User type</InputLabel>
+                  <Select
+                    variant="standard"
+                    value={userType}
+                    onChange={(event: SelectChangeEvent) => {
+                      setUserType(event.target.value as string);
+                    }}
+                  >
+                    <MenuItem value={'client'}>Client</MenuItem>
+                    <MenuItem value={'worker'}>Worker</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item md={4}>
+                <FormControl fullWidth>
+                  <InputLabel id="gender">Gender</InputLabel>
+                  <Select
+                    variant="standard"
+                    value={gender}
+                    onChange={(event: SelectChangeEvent) => {
+                      setGender(event.target.value as string);
+                    }}
+                  >
+                    <MenuItem value={'female'}>Female</MenuItem>
+                    <MenuItem value={'male'}>Male</MenuItem>
+                    <MenuItem value={'others'}>Others</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              {userType === 'worker' && (
+                <Grid item md={6}>
+                  <FormControl fullWidth>
+                    <InputLabel id="workHoursWeekly">Hours / day</InputLabel>
+                    <Select
+                      variant="standard"
+                      value={workHoursWeekly}
+                      onChange={(event: SelectChangeEvent) => {
+                        setWorkHoursWeekly(event.target.value as string);
+                      }}
+                    >
+                      <MenuItem value={40}>Full time 8h /day</MenuItem>
+                      <MenuItem value={30}>Part time 6h /day</MenuItem>
+                      <MenuItem value={25}>part time 5h /day</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+              )}
+              <Grid item md={6}>
                 <TextField
                   fullWidth
                   required
                   id="birthDate"
                   label="Birthday"
                   type="date"
-                  defaultValue="2001-11-21"
-                  sx={{ width: 220 }}
+                  defaultValue="1994-01-01"
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  value={values.birthDate}
-                  onChange={handleChange('birthDate')}
+                  onChange={(e) => setBirthDate(e.target.value)}
                   variant="standard"
                 />
               </Grid>
               <Grid
                 item
-                xs={12}
+                md={12}
                 container
                 direction="row"
                 justifyContent="center"
                 alignItems="center"
               >
-                <Button variant="contained">Submit</Button>
+                <Button variant="contained" type="submit">
+                  Create User
+                </Button>
               </Grid>
             </Grid>
-          </Box>
-        </Paper>
+          </Paper>
+        </Box>
       </form>
-    </Container>
+    </>
   );
 }

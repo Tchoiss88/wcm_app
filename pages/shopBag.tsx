@@ -98,16 +98,17 @@ export default function ShopBag() {
       }
 
       try {
+        window.confirm('Accept to prosed with your order');
         const response = await axios.post(
           `http://localhost:3000/api/order`,
           order
         );
+
+        window.location.reload(false);
       } catch (err) {
         alert(err.response.data.error);
         return;
       }
-
-      console.log(data.data, 'data', 'order', order);
     }
   };
 

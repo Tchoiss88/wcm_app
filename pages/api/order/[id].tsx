@@ -67,23 +67,60 @@ export default async (
 
     const { id } = req.query;
 
+    const { email } = req.body;
+
     if (!id) {
       res.status(400).json({ error: ` Missing Id on request body` });
       res.end();
       return;
     }
 
-    const response = await db.collection('orders').deleteOne({
+    await db.collection('orders').deleteOne({
       _id: new ObjectId(id),
     });
 
-    if (!response) {
-      res.status(400).json({ error: `The order with ID=${id} was not found` });
+    await db
+      .collection('users')
+      .update(
+        { email: email },
+        { $pull: { orders: { _id: new ObjectId(id) } } }
+      );
+
+    res.status(200).json({ message: `Order deleted successfully` });
+    res.end();
+
+    //
+  } else if (req.method === 'PATCH') {
+    const { db } = await connect();
+
+    const { id } = req.query;
+
+    const { email, orderState } = req.body;
+
+    console.log(email, 'email', orderState, ' orderState');
+
+    if (!id) {
+      res.status(400).json({ error: ` Missing Id on request body` });
       res.end();
       return;
     }
 
-    res.status(200).json({ message: `Order deleted successfully` });
+    await db.collection('orders').updateOne(
+      {
+        _id: new ObjectId(id),
+      },
+      { $set: { orderState: orderState } }
+    );
+
+    // FIXME
+    await db
+      .collection('users')
+      .updateOne(
+        { email: email, 'orders._id': new Object(id) },
+        { $set: { 'orders.$.orderState': orderState } }
+      );
+
+    res.status(200).json({ message: `Order update successfully` });
     res.end();
 
     //
