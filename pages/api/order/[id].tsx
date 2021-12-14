@@ -112,14 +112,6 @@ export default async (
       { $set: { orderState: orderState } }
     );
 
-    // FIXME
-    await db
-      .collection('users')
-      .updateOne(
-        { email: email, 'orders._id': new Object(id) },
-        { $set: { 'orders.$.orderState': orderState } }
-      );
-
     res.status(200).json({ message: `Order update successfully` });
     res.end();
 

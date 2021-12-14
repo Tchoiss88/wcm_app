@@ -104,14 +104,20 @@ function OrderComponent(props) {
     console.log(id);
 
     try {
-      const response = await axios
-        .patch(`http://localhost:3000/api/order/${id}`, {
-          orderState: props.data.orderState + 1,
-          email: props.data.email,
-        })
-        .then((response) => {
-          response.status;
-        });
+      if (props.data.orderState < 5) {
+        const response = await axios
+          .patch(`http://localhost:3000/api/order/${id}`, {
+            orderState: props.data.orderState + 1,
+            email: props.data.email,
+          })
+          .then((response) => {
+            response.status;
+          });
+
+        window.location.reload(false);
+      } else {
+        return;
+      }
     } catch {
       alert('Can not update the order');
       return;

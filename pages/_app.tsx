@@ -30,8 +30,6 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
       ).json();
 
       setOrders(dataOrders);
-
-      console.log(dataItems, 'items', dataOrders, 'orders');
     };
 
     dataFromDB();

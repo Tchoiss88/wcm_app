@@ -5,13 +5,14 @@ import OrderComponent from '../src/components/Order.component';
 import { useSession } from 'next-auth/client';
 import useSWR from 'swr';
 import api from 'utils/api';
+import useStore from 'lib/store';
 
 const Order: NextPage = () => {
   const [session] = useSession();
 
   const { data } = useSWR(`/api/user/${session?.user.email}`, api);
 
-  const orders = data?.data.orders ? data?.data.orders : [];
+  const orders = useStore((state) => state.orders);
 
   return (
     <Box className={styles.page}>

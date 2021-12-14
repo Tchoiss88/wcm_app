@@ -157,7 +157,7 @@ export default function CreateItemComponent(props) {
                   >
                     <MenuItem value={'female'}>Female</MenuItem>
                     <MenuItem value={'male'}>Male</MenuItem>
-                    <MenuItem value={'others'}>Others</MenuItem>
+                    <MenuItem value={'others'}>Don't mather</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
@@ -172,9 +172,12 @@ export default function CreateItemComponent(props) {
                       setSize(event.target.value as string);
                     }}
                   >
-                    <MenuItem value={'female'}>Female</MenuItem>
-                    <MenuItem value={'male'}>Male</MenuItem>
-                    <MenuItem value={'others'}>Others</MenuItem>
+                    <MenuItem value={'xs'}>XS - 30 - 32</MenuItem>
+                    <MenuItem value={'s'}>S - 34 - 36</MenuItem>
+                    <MenuItem value={'m'}>M - 38 - 40</MenuItem>
+                    <MenuItem value={'l'}>L - 42- 44</MenuItem>
+                    <MenuItem value={'xl'}>XL - 46 - 48</MenuItem>
+                    <MenuItem value={'xxl'}>XXL - 50 - 52 </MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
