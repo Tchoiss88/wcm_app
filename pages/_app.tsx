@@ -9,10 +9,35 @@ import Layout from '../src/layout/Layout';
 import theme from '../lib/theme';
 import { Provider as AuthProvider } from 'next-auth/client';
 import rootReducer from '../src/redux/reducer';
+import useStore from 'lib/store';
 
 const store = createStore(rootReducer);
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
+  const setStock = useStore((state) => state.setStock);
+  const setOrders = useStore((state) => state.setOrders);
+
+  React.useEffect(() => {
+    const dataFromDB = async () => {
+      const dataItems = await (
+        await fetch('http://localhost:3000/api/item')
+      ).json();
+
+      setStock(dataItems);
+
+      const dataOrders = await await (
+        await fetch('http://localhost:3000/api/order')
+      ).json();
+
+      setOrders(dataOrders);
+
+      console.log(dataItems, 'items', dataOrders, 'orders');
+    };
+
+    dataFromDB();
+  }, []);
+
+  //
   return (
     <>
       <Head>
