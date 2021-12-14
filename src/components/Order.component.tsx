@@ -96,7 +96,6 @@ function OrderComponent(props) {
     }
   };
 
-  //TODO
   const updateOrder = async (e) => {
     e.preventDefault();
     let id = props.data._id;

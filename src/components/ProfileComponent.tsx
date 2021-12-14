@@ -169,7 +169,6 @@ export default function ProfileComponent(props) {
                     }}
                   >
                     <MenuItem value={'client'}>Client</MenuItem>
-                    <MenuItem value={'worker'}>Worker</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
