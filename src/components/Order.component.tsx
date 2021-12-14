@@ -101,8 +101,6 @@ function OrderComponent(props) {
     e.preventDefault();
     let id = props.data._id;
 
-    console.log(id);
-
     try {
       if (props.data.orderState < 5) {
         const response = await axios
