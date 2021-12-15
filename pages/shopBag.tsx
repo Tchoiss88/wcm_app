@@ -17,13 +17,6 @@ export default function ShopBag() {
     api
   );
 
-  // FIXME save the array in the local store on a click
-  // let itemsInBag = useSelector((state) => state);
-
-  // window.localStorage.setItem('shopBagItems', itemsInBag);
-
-  // window.localStorage.getItem('shopBagItems');
-
   let itemToBuy = useSelector((state) => state);
 
   const itemsTotalPrice = calculatedItemsTotalPrice();
@@ -81,6 +74,7 @@ export default function ShopBag() {
         createDate: Date.now(),
         deliveryDate: Date.now(),
         orderState: 0,
+        orderCancellation: false,
         orderItems: itemToBuy,
         orderSummary: {
           itemsPrice: itemsTotalPrice,
@@ -140,7 +134,6 @@ export default function ShopBag() {
               spacing={{ xs: 2, md: 3 }}
               columns={{ xs: 4, sm: 8, md: 1 }}
             >
-              {/* FIXME */}
               {itemToBuy.map((itemBag, index) => (
                 <Grid item xs={2} sm={3} md={3} key={index}>
                   <ItemBag data={itemBag} />
@@ -157,7 +150,6 @@ export default function ShopBag() {
           item
           xs={4}
         >
-          {/* FIXME */}
           <Paper elevation={10} style={paperStyles}>
             <Grid
               container

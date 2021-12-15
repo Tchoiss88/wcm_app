@@ -20,6 +20,7 @@ interface SuccessResponseType {
   createDate: number;
   deliveryDate: number;
   orderState: number;
+  orderCancellation: Boolean;
   orderItems: [];
   orderSummary: {};
 }
@@ -46,6 +47,7 @@ export default async (
       createDate,
       deliveryDate,
       orderState,
+      orderCancellation,
       orderItems,
       orderSummary,
     }: {
@@ -57,6 +59,7 @@ export default async (
       deliveryDate: number;
       orderState: number;
       orderItems: [];
+      orderCancellation: Boolean;
       orderSummary: {};
     } = req.body;
 
@@ -83,6 +86,7 @@ export default async (
       createDate,
       deliveryDate,
       orderState,
+      orderCancellation,
       orderItems,
       orderSummary,
     };

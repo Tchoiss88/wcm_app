@@ -23,8 +23,6 @@ function OrderComponent(props) {
   const [session] = useSession();
   const [showDetail, setShowDetail] = React.useState(false);
 
-  const [canCancelResult, setCanCancelResult] = React.useState({});
-
   const toggleShowDetail = (e) => {
     e.preventDefault();
 
@@ -68,9 +66,12 @@ function OrderComponent(props) {
 
     try {
       if (window.confirm('Are you sure you want to cancel the order')) {
+        let id = props.data._id;
         const response = await axios
-          .delete(`http://localhost:3000/api/order/${canCancelResult.id}`, {
-            data: { email: canCancelResult.email },
+          .delete(`http://localhost:3000/api/order/${id}`, {
+            data: {
+              email: props.data.email,
+            },
           })
           .then((response) => {
             response.status;
@@ -109,16 +110,26 @@ function OrderComponent(props) {
     }
   };
 
-  function canICancelThisOrder(e) {
+  async function canICancelThisOrder(e) {
     e.preventDefault();
 
-    let orderToCancel = {
-      id: props.data._id,
-      email: props.data.email,
-      cancellation: true,
-    };
+    try {
+      if (window.confirm('Are you sure you want to cancel the order')) {
+        const response = await axios
+          .patch(`http://localhost:3000/api/order/${props.data._id}`, {
+            email: props.data.email,
+            orderCancellation: true,
+          })
+          .then((response) => {
+            response.status;
+          });
 
-    setCanCancelResult(orderToCancel);
+        window.location.reload(false);
+      }
+    } catch {
+      alert('Can not delete the order');
+      return;
+    }
   }
 
   // console.log(props.data.orderItems, 'Items');
@@ -134,12 +145,12 @@ function OrderComponent(props) {
               justifyContent="space-around"
               alignItems="center"
             >
-              {canCancelResult?.cancellation && (
+              {props.data.orderCancellation && (
                 <Button variant="contained" onClick={cancelOrder}>
                   cancel order
                 </Button>
               )}
-              {canCancelResult?.cancellation !== true && (
+              {!props.data.orderCancellation && (
                 <Button variant="contained" onClick={updateOrder}>
                   Next State
                 </Button>

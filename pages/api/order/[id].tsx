@@ -95,9 +95,16 @@ export default async (
 
     const { id } = req.query;
 
-    const { email, orderState } = req.body;
+    const { email, orderState, orderCancellation } = req.body;
 
-    console.log(email, 'email', orderState, ' orderState');
+    console.log(
+      email,
+      'email',
+      orderState,
+      ' orderState',
+      orderCancellation,
+      'cancel'
+    );
 
     if (!id) {
       res.status(400).json({ error: ` Missing Id on request body` });
@@ -105,12 +112,23 @@ export default async (
       return;
     }
 
-    await db.collection('orders').updateOne(
-      {
-        _id: new ObjectId(id),
-      },
-      { $set: { orderState: orderState } }
-    );
+    if (orderState) {
+      await db.collection('orders').updateOne(
+        {
+          _id: new ObjectId(id),
+        },
+        { $set: { orderState: orderState } }
+      );
+    }
+
+    if (orderCancellation) {
+      await db.collection('orders').updateOne(
+        {
+          _id: new ObjectId(id),
+        },
+        { $set: { orderCancellation: orderCancellation } }
+      );
+    }
 
     res.status(200).json({ message: `Order update successfully` });
     res.end();
