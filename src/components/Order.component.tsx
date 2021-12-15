@@ -17,30 +17,18 @@ const steps = [
   'Delivered',
 ];
 
-interface Order {
-  id: string;
-  email: string;
-  cancellation: Boolean;
-}
-
 const paperStyles = { padding: '30px 20px', width: 1000, margin: '20px auto' };
 
 function OrderComponent(props) {
   const [session] = useSession();
   const [showDetail, setShowDetail] = React.useState(false);
+
   const [canCancelResult, setCanCancelResult] = React.useState({});
 
   const toggleShowDetail = (e) => {
     e.preventDefault();
 
-    if (showDetail) {
-      setShowDetail(false);
-      return;
-    }
-    if (!showDetail) {
-      setShowDetail(true);
-      return;
-    }
+    setShowDetail(!showDetail);
   };
 
   const { data } = useSWR(`/api/user/${session?.user.email}`, api);
@@ -230,9 +218,11 @@ function OrderComponent(props) {
             justifyContent="space-around"
             alignItems="center"
           >
-            <Button variant="contained" onClick={canICancelThisOrder}>
-              Cancel order
-            </Button>
+            {props.data.orderState <= 2 && (
+              <Button variant="contained" onClick={canICancelThisOrder}>
+                Cancel order
+              </Button>
+            )}
             <Button variant="contained" onClick={toggleShowDetail}>
               Order Details
             </Button>
@@ -245,9 +235,8 @@ function OrderComponent(props) {
               justifyContent="space-around"
               alignItems="center"
             >
-              <span>Items</span>
               {props.data.orderItems.map((item, i) => {
-                <OrderItemDetails data={item} key={i} />;
+                <span>{item.title}</span>;
               })}
             </Grid>
           )}

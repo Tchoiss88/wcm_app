@@ -26,7 +26,7 @@ export default function Stock() {
             columns={{ xs: 4, sm: 8, md: 12 }}
           >
             {stock.map((item, i) => (
-              <Grid item xs={2} sm={3} md={3} key={i}>
+              <Grid item xs={2} sm={3} md={3} key={item._id}>
                 <ItemStock data={item} />
               </Grid>
             ))}

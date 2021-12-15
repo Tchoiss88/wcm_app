@@ -40,7 +40,6 @@ export default function Home() {
         justifyContent="center"
         alignItems="flex-start"
         item
-        xs={12}
       >
         <h2>
           {` ${

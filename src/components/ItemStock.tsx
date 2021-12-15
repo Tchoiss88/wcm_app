@@ -51,8 +51,8 @@ export default function ItemStock(props) {
       if (props.data.orderState < 5) {
         const response = await axios
           .patch(`http://localhost:3000/api/item/${props.data._id}`, {
-            orderState: props.data.orderState + 1,
-            email: props.data.email,
+            size: size,
+            quantity: quantity,
           })
           .then((response) => {
             response.status;
