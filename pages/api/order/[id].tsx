@@ -97,15 +97,6 @@ export default async (
 
     const { email, orderState, orderCancellation } = req.body;
 
-    console.log(
-      email,
-      'email',
-      orderState,
-      ' orderState',
-      orderCancellation,
-      'cancel'
-    );
-
     if (!id) {
       res.status(400).json({ error: ` Missing Id on request body` });
       res.end();
